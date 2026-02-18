@@ -194,57 +194,97 @@ curl http://localhost:8080/actuator/health
 
 ### Running with Docker
 
-#### Build Docker Image for Java 17:
+#### Java 17
+
+Build Docker image:
 ```bash
 docker build -f Dockerfile.java17 -t benchmark-app:java17 .
 ```
 
-#### Build Docker Image for Java 21:
+Run with Docker (requires PostgreSQL):
+```bash
+docker run -d --name benchmark-app-java17 \
+  -p 8080:8080 \
+  -e DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/benchmark \
+  -e DATABASE_USER=postgres \
+  -e DATABASE_PASSWORD=postgres \
+  -e SPRING_PROFILES_ACTIVE=ecs \
+  -e JAVA_TOOL_OPTIONS="-XX:+UseG1GC -XX:MaxRAMPercentage=75.0" \
+  benchmark-app:java17
+```
+
+Or use Docker Compose (includes PostgreSQL):
+```bash
+docker-compose -f docker-compose-java17.yml up
+```
+
+#### Java 21
+
+Build Docker image:
 ```bash
 docker build -f Dockerfile.java21 -t benchmark-app:java21 .
 ```
 
-#### Build Docker Image for Java 25:
+Run with Docker (requires PostgreSQL):
+```bash
+docker run -d --name benchmark-app-java21 \
+  -p 8080:8080 \
+  -e DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/benchmark \
+  -e DATABASE_USER=postgres \
+  -e DATABASE_PASSWORD=postgres \
+  -e SPRING_PROFILES_ACTIVE=ecs \
+  -e JAVA_TOOL_OPTIONS="-XX:+UseZGC -XX:MaxRAMPercentage=75.0" \
+  benchmark-app:java21
+```
+
+Or use Docker Compose (includes PostgreSQL):
+```bash
+docker-compose -f docker-compose-java21.yml up
+```
+
+#### Java 25
+
+Build Docker image:
 ```bash
 docker build -f Dockerfile.java25 -t benchmark-app:java25 .
 ```
 
-#### Run with Docker Compose:
-Create a `docker-compose.yml`:
-```yaml
-version: '3.8'
-services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: benchmark
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-
-  app:
-    image: benchmark-app:java17
-    environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/benchmark
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-      SPRING_PROFILES_ACTIVE: ecs
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
-
-volumes:
-  postgres-data:
-```
-
-Start services:
+Run with Docker (requires PostgreSQL):
 ```bash
-docker-compose up
+docker run -d --name benchmark-app-java25 \
+  -p 8080:8080 \
+  -e DATABASE_URL=jdbc:postgresql://host.docker.internal:5432/benchmark \
+  -e DATABASE_USER=postgres \
+  -e DATABASE_PASSWORD=postgres \
+  -e SPRING_PROFILES_ACTIVE=ecs \
+  -e JAVA_TOOL_OPTIONS="-XX:+UseZGC -XX:MaxRAMPercentage=75.0" \
+  benchmark-app:java25
 ```
+
+Or use Docker Compose (includes PostgreSQL):
+```bash
+docker-compose -f docker-compose-java25.yml up
+```
+
+#### Run All Versions Together (for comparison)
+
+The main `docker-compose.yml` allows running all Java versions simultaneously on different ports:
+```bash
+# Run Java 17 only (default)
+docker-compose up
+
+# Run Java 17 and Java 21
+docker-compose --profile java21 up
+
+# Run all versions (Java 17, 21, and 25)
+docker-compose --profile java21 --profile java25 up
+```
+
+This starts:
+- Java 17 app on port 8080
+- Java 21 app on port 8081 (when java21 profile is active)
+- Java 25 app on port 8082 (when java25 profile is active)
+- PostgreSQL on port 5432 (shared by all apps)
 
 ## ⚙️ Configuration
 
