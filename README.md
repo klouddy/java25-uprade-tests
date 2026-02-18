@@ -7,9 +7,42 @@ This repository contains a comprehensive benchmarking suite for comparing Java 1
 ```
 ├── Scenarios/              # Test scenario definitions
 │   └── REST/              # REST API + RDS test scenarios
+├── cdk/                   # AWS CDK infrastructure (TypeScript)
 ├── Comparison.md          # Cost and performance comparison table
 └── spring-boot-app/       # Baseline Spring Boot benchmark application
 ```
+
+## 🏗️ AWS CDK Infrastructure
+
+The `/cdk` directory contains AWS CDK infrastructure-as-code for deploying the benchmark environment:
+
+### Infrastructure Components
+- **VPC**: Public and private subnets across 2 AZs
+- **ECS Fargate**: Containerized application with configurable CPU/memory
+- **Application Load Balancer**: Internet-facing ALB for HTTP traffic
+- **RDS Database**: PostgreSQL or MySQL with automated credentials
+- **Security Groups**: Minimal, explicit network rules
+- **Secrets Manager**: Secure credential storage
+
+### Quick Deploy
+
+```bash
+cd cdk
+
+# Install dependencies
+npm install
+
+# Bootstrap CDK (first time only)
+cdk bootstrap
+
+# Deploy infrastructure
+cdk deploy -c containerImage=YOUR_ECR_REPO/benchmark-app:java17
+
+# Destroy infrastructure
+cdk destroy
+```
+
+See [cdk/README.md](cdk/README.md) for complete infrastructure documentation.
 
 ## 🚀 Spring Boot Benchmark Application
 

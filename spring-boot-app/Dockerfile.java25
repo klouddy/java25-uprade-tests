@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for Java 25
-FROM eclipse-temurin:25-ea-jdk-jammy AS builder
+FROM eclipse-temurin:25-jdk-jammy AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests -Djava.version=25
 
 # Runtime stage
-FROM eclipse-temurin:25-ea-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 
 WORKDIR /app
 
