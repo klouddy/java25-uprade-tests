@@ -17,6 +17,39 @@ All resources are **fully disposable** via `cdk destroy` for reproducible benchm
 
 ## 🚀 Quick Start
 
+### Automated Deployment (Recommended)
+
+Use the provided automation scripts for easy setup:
+
+```bash
+cd cdk
+
+# One-command setup for Java 17
+./complete-setup.sh 17
+
+# Or for Java 21
+./complete-setup.sh 21
+
+# Or for Java 25
+./complete-setup.sh 25
+```
+
+This handles everything: ECR setup, image building, CDK deployment, and verification.
+
+**Individual Scripts:**
+- `setup-ecr-and-images.sh` - Setup ECR and build/push Docker images
+- `deploy.sh <version> [cpu] [memory] [count]` - Deploy CDK stack
+- `verify-deployment.sh` - Test deployed application
+- `destroy.sh` - Tear down infrastructure
+
+For detailed script documentation, see [SCRIPTS_README.md](SCRIPTS_README.md).
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed manual steps.
+
+### Manual Deployment
+
+For manual control over each step:
+
 ### Prerequisites
 
 - AWS CLI configured with credentials

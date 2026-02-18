@@ -2,6 +2,42 @@
 
 This guide walks you through deploying the benchmark infrastructure for Java 17, 21, and 25 performance testing.
 
+## 🚀 Quick Start with Automation Scripts
+
+For automated deployment, use the provided scripts:
+
+```bash
+cd cdk
+
+# Complete setup and deployment in one command (Java 17)
+./complete-setup.sh 17
+
+# Or for Java 21
+./complete-setup.sh 21
+
+# Or for Java 25
+./complete-setup.sh 25
+```
+
+This single command will:
+1. Setup ECR repository
+2. Build and push Docker images
+3. Bootstrap CDK (if needed)
+4. Deploy infrastructure
+5. Verify deployment
+
+**Individual Scripts Available:**
+- `./setup-ecr-and-images.sh` - Setup ECR and build/push images
+- `./deploy.sh <java-version> [cpu] [memory] [count]` - Deploy CDK stack
+- `./verify-deployment.sh` - Test the deployed application
+- `./destroy.sh` - Tear down all infrastructure
+
+---
+
+## 📋 Manual Deployment Steps
+
+If you prefer to run steps manually or need more control, follow the detailed steps below.
+
 ## Prerequisites
 
 Before you begin, ensure you have:
