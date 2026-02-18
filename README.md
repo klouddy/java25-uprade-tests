@@ -1,6 +1,6 @@
 # Java 17/21/25 Upgrade & Benchmarking Tests
 
-This repository contains a comprehensive benchmarking suite for comparing Java 17, Java 21, and Java 25 performance across various scenarios on AWS ECS Fargate with Amazon RDS.
+This repository contains a comprehensive benchmarking suite for comparing Java 17, Java 21, and Java 25 performance across various scenarios on AWS ECS Fargate with Amazon RDS and Amazon MSK.
 
 ## 📁 Repository Structure
 
@@ -9,7 +9,8 @@ This repository contains a comprehensive benchmarking suite for comparing Java 1
 │   └── REST/              # REST API + RDS test scenarios
 ├── cdk/                   # AWS CDK infrastructure (TypeScript)
 ├── Comparison.md          # Cost and performance comparison table
-└── spring-boot-app/       # Baseline Spring Boot benchmark application
+├── spring-boot-app/       # Spring Boot benchmark application (RDS/PostgreSQL)
+└── spring-boot-kafka-app/ # Spring Boot benchmark application (Kafka/MSK)
 ```
 
 ## 🏗️ AWS CDK Infrastructure
@@ -97,6 +98,59 @@ docker build -f Dockerfile.java25 -t benchmark-app:java25 .
 
 See [spring-boot-app/README.md](spring-boot-app/README.md) for complete documentation.
 
+## 🚀 Spring Boot Kafka Benchmark Application
+
+The `/spring-boot-kafka-app` directory contains a Spring Boot 3.5.10 application with Apache Kafka integration designed for benchmarking:
+
+### Features
+- **REST API**: Message producer and consumer endpoints
+- **Kafka Integration**: Event streaming with AWS MSK support
+- **Metrics**: Comprehensive JVM, GC, Kafka, and application metrics via Micrometer
+- **Multi-version**: Support for Java 17, 21, and 25
+- **Production-ready**: Optimized for load testing and benchmarking with MSK
+
+### Quick Start
+
+```bash
+cd spring-boot-kafka-app
+
+# Build the application
+./mvnw clean package
+
+# Run with Docker Compose (includes Kafka and Zookeeper)
+docker-compose up
+
+# Or run locally (requires Kafka)
+java -jar target/spring-boot-kafka-benchmark-1.0.0.jar --spring.profiles.active=local
+```
+
+### Available Endpoints
+
+- `POST /messages` - Send message to Kafka topic
+- `POST /messages/topic/{topic}` - Send message to specific topic
+- `GET /messages/consumed?limit=10` - Get consumed messages
+- `DELETE /messages/consumed` - Clear consumed messages
+- `GET /actuator/health` - Health check
+- `GET /actuator/metrics` - Metrics endpoint
+- `GET /actuator/prometheus` - Prometheus metrics
+
+### Docker Images
+
+Build for different Java versions:
+
+```bash
+# Java 17
+docker build -f Dockerfile.java17 -t kafka-benchmark:java17 .
+
+# Java 21
+docker build -f Dockerfile.java21 -t kafka-benchmark:java21 .
+
+# Java 25
+docker build -f Dockerfile.java25 -t kafka-benchmark:java25 .
+```
+
+See [spring-boot-kafka-app/README.md](spring-boot-kafka-app/README.md) for complete documentation.
+
 ## 📊 Test Scenarios
 
 The repository includes comprehensive test scenarios for evaluating:
@@ -115,12 +169,13 @@ Track and compare the operational costs of running the application on different 
 ## 🔧 Technologies
 
 - **Java**: 17, 21, 25
-- **Spring Boot**: 3.4.2
+- **Spring Boot**: 3.4.2 (RDS app), 3.5.10 (Kafka app)
 - **Database**: PostgreSQL 15
+- **Messaging**: Apache Kafka 7.7.0 / AWS MSK
 - **Build**: Maven
 - **Container**: Docker with Eclipse Temurin base images
 - **Metrics**: Micrometer with Prometheus
-- **Infrastructure**: AWS ECS Fargate + Amazon RDS
+- **Infrastructure**: AWS ECS Fargate + Amazon RDS/MSK
 
 ## 📝 License
 
