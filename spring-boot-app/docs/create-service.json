@@ -1,0 +1,27 @@
+{
+  "cluster": "java-bench-cluster",
+  "serviceName": "java-bench-service",
+  "taskDefinition": "java-bench-task",
+  "desiredCount": 2,
+  "launchType": "FARGATE",
+  "networkConfiguration": {
+    "awsvpcConfiguration": {
+      "subnets": [
+        "subnet-03a7355ec57599128",
+        "subnet-08a3b357645731189",
+        "subnet-0a82693b9188fece2"
+      ],
+      "securityGroups": [
+        "sg-0ed930468631a6695"
+      ],
+      "assignPublicIp": "ENABLED"
+    }
+  },
+  "loadBalancers": [
+    {
+      "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:913846010507:targetgroup/java-bench-tg/30a04effc615a6ea",
+      "containerName": "java-bench-app",
+      "containerPort": 8080
+    }
+  ]
+}

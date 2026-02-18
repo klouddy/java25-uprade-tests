@@ -1,0 +1,50 @@
+{
+  "family": "java-bench-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::913846010507:role/java-bench-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::913846010507:role/java-bench-ecs-execution-role",
+  "containerDefinitions": [
+    {
+      "name": "java-bench-app",
+      "image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java17",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "jdbc:postgresql://java-bench-db.c7ksxx2gwiy0.us-east-1.rds.amazonaws.com:5432/benchmarkdb"
+        },
+        {
+          "name": "SPRING_DATASOURCE_USERNAME",
+          "value": "benchuser"
+        },
+        {
+          "name": "SPRING_DATASOURCE_PASSWORD",
+          "value": "BenchUserStrongPass123!"
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "ecs"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/actuator/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "essential": true
+    }
+  ]
+}
