@@ -1,0 +1,11 @@
+-- Optional: Enable PostgreSQL trigram extension for better search performance
+-- Uncomment these lines if you need to optimize the search functionality for large datasets
+
+-- CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- CREATE INDEX idx_customer_first_name_trgm ON customers USING gin (first_name gin_trgm_ops);
+-- CREATE INDEX idx_customer_last_name_trgm ON customers USING gin (last_name gin_trgm_ops);
+-- CREATE INDEX idx_customer_email_trgm ON customers USING gin (email gin_trgm_ops);
+
+-- With these indexes, the LIKE '%term%' queries will perform significantly better.
+-- For benchmarking purposes, the basic indexes in V1 are sufficient for moderate data volumes.

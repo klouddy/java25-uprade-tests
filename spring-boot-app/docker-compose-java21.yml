@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: benchmark-postgres-java21
+    environment:
+      POSTGRES_DB: benchmark
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data-java21:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app-java21:
+    build:
+      context: .
+      dockerfile: Dockerfile.java21
+    container_name: benchmark-app-java21
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/benchmark
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      SPRING_PROFILES_ACTIVE: ecs
+      JAVA_TOOL_OPTIONS: "-XX:+UseZGC -XX:MaxRAMPercentage=75.0"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data-java21:
