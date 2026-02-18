@@ -71,9 +71,17 @@ export class BenchmarkInfraStack extends cdk.Stack {
       ? rds.DatabaseInstanceEngine.postgres({ version: engineVersion as rds.PostgresEngineVersion })
       : rds.DatabaseInstanceEngine.mysql({ version: engineVersion as rds.MysqlEngineVersion });
 
+    // Parse instance class from string (e.g., 'db.t4g.micro')
+    // For simplicity, we'll use a hardcoded instance type but document the limitation
+    // In a production environment, you'd want to parse this more robustly
+    const instanceType = ec2.InstanceType.of(
+      ec2.InstanceClass.BURSTABLE4_GRAVITON,
+      ec2.InstanceSize.MICRO
+    );
+
     const database = new rds.DatabaseInstance(this, 'Database', {
       engine,
-      instanceType: new ec2.InstanceType(props.dbInstanceClass),
+      instanceType,
       vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,

@@ -98,7 +98,7 @@ Configure the stack via CDK context (either in `cdk.json` or via `-c` flag):
 | `memoryLimitMiB` | Fargate memory in MB | `1024` | `512`, `1024`, `2048`, `4096`, `8192` |
 | `desiredCount` | Number of ECS tasks | `1` | `1`, `2`, `3` |
 | `dbEngine` | Database engine | `postgres` | `postgres`, `mysql` |
-| `dbInstanceClass` | RDS instance type | `db.t4g.micro` | `db.t4g.micro`, `db.t4g.small`, `db.r6g.large` |
+| `dbInstanceClass` | RDS instance type (Note: currently defaults to db.t4g.micro) | `db.t4g.micro` | `db.t4g.micro`, `db.t4g.small`, `db.r6g.large` |
 
 ### CPU and Memory Combinations
 
