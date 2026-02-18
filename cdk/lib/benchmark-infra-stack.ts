@@ -14,6 +14,8 @@ export interface BenchmarkInfraStackProps extends cdk.StackProps {
   memoryLimitMiB: number;
   desiredCount: number;
   dbEngine: string;
+  // Note: dbInstanceClass is currently not used; instance type is hardcoded to db.t4g.micro
+  // TODO: Implement proper instance class parsing to support different RDS instance types
   dbInstanceClass: string;
 }
 
