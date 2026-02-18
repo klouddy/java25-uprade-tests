@@ -1,0 +1,88 @@
+spring:
+  application:
+    name: spring-boot-kafka-benchmark
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: ${KAFKA_PRODUCER_ACKS:all}
+      retries: ${KAFKA_PRODUCER_RETRIES:3}
+      properties:
+        max.in.flight.requests.per.connection: 5
+        enable.idempotence: true
+        compression.type: ${KAFKA_COMPRESSION_TYPE:snappy}
+        linger.ms: 10
+        batch.size: 16384
+    
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:kafka-benchmark-group}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: ${KAFKA_AUTO_OFFSET_RESET:earliest}
+      enable-auto-commit: false
+      max-poll-records: ${KAFKA_MAX_POLL_RECORDS:500}
+      properties:
+        spring.json.trusted.packages: "*"
+        max.poll.interval.ms: 300000
+        session.timeout.ms: 30000
+        fetch.min.bytes: 1
+        fetch.max.wait.ms: 500
+    
+    listener:
+      ack-mode: batch
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:3}
+
+kafka:
+  topics:
+    orders: ${KAFKA_TOPIC_ORDERS:orders}
+    events: ${KAFKA_TOPIC_EVENTS:events}
+    partitions: ${KAFKA_PARTITIONS:3}
+    replication-factor: ${KAFKA_REPLICATION_FACTOR:2}
+
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  tomcat:
+    threads:
+      max: ${TOMCAT_MAX_THREADS:200}
+      min-spare: 10
+    max-connections: 10000
+    accept-count: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+    tags:
+      application: ${spring.application.name}
+      java_version: ${java.version}
+
+logging:
+  level:
+    root: INFO
+    com.benchmark.kafka: INFO
+    org.springframework.kafka: INFO
+    org.apache.kafka: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
