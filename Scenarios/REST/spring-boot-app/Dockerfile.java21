@@ -24,6 +24,9 @@ WORKDIR /app
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
+# Create directory for GC logs (will be mounted as volume in ECS)
+RUN mkdir -p /var/log/gc && chown -R appuser:appuser /var/log/gc
+
 # Copy the JAR from builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
@@ -35,13 +38,15 @@ USER appuser
 # Expose port
 EXPOSE 8080
 
-# Set default JVM options for Java 21 (can be overridden)
-# Enable virtual threads and use ZGC for better performance
-ENV JAVA_TOOL_OPTIONS="-XX:+UseZGC -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError"
+# Set default JVM options for Java 21 (can be overridden at runtime)
+# ZGC: Low-latency garbage collector for better response times
+# GC logging: captures GC pause times and frequency for performance analysis
+# HeapDump: captures memory state on OutOfMemory errors
+ENV JAVA_TOOL_OPTIONS="-XX:+UseZGC -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -Xlog:gc*:stdout:time,uptime,level,tags"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "echo \"APP_IMAGE_TAG=$APP_IMAGE_TAG\"; echo \"JAVA_TOOL_OPTIONS=$JAVA_TOOL_OPTIONS\"; java -jar app.jar"]

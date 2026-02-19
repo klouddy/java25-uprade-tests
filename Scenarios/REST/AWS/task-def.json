@@ -6,10 +6,24 @@
   "memory": "1024",
   "executionRoleArn": "arn:aws:iam::913846010507:role/java-bench-ecs-execution-role",
   "taskRoleArn": "arn:aws:iam::913846010507:role/java-bench-ecs-execution-role",
+  "tags": [
+    {
+      "key": "Environment",
+      "value": "Benchmark"
+    },
+    {
+      "key": "Purpose",
+      "value": "Java Version Comparison"
+    },
+    {
+      "key": "CostCenter",
+      "value": "Engineering"
+    }
+  ],
   "containerDefinitions": [
     {
       "name": "java-bench-app",
-      "image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java17",
+      "image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java-17-rest-20260219-01",
       "portMappings": [
         {
           "containerPort": 8080,
@@ -44,7 +58,17 @@
         "retries": 3,
         "startPeriod": 60
       },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/java-bench-app",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "mountPoints": [],
       "essential": true
     }
-  ]
+  ],
+  "volumes": [ ]
 }
