@@ -1,0 +1,14 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    
+kafka:
+  topics:
+    partitions: 1
+    replication-factor: 1
+
+logging:
+  level:
+    root: INFO
+    com.benchmark.kafka: DEBUG
+    org.springframework.kafka: DEBUG
