@@ -21,6 +21,9 @@ FROM eclipse-temurin:25-jre-jammy
 
 WORKDIR /app
 
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
@@ -39,10 +42,10 @@ USER appuser
 EXPOSE 8080
 
 # Set default JVM options for Java 25 (can be overridden at runtime)
-# ZGC: Low-latency garbage collector for improved performance and predictability
+# G1GC: Garbage-first garbage collector for balanced throughput and latency
 # GC logging: captures GC pause times and frequency for performance analysis
 # HeapDump: captures memory state on OutOfMemory errors
-ENV JAVA_TOOL_OPTIONS="-XX:+UseZGC -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError -Xlog:gc*:stdout:time,uptime,level,tags"
+ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \

@@ -23,11 +23,13 @@ export function generateCustomerData() {
   const firstName = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
   const lastName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)];
   const city = CITIES[Math.floor(Math.random() * CITIES.length)];
+  // Add timestamp and random suffix to ensure unique emails under load
+  const uniqueSuffix = `${Date.now()}_${Math.floor(Math.random() * 10000)}`;
   
   return {
     firstName: firstName,
     lastName: lastName,
-    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
+    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${uniqueSuffix}@example.com`,
     city: city,
     createdAt: new Date().toISOString()
   };

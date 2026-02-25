@@ -23,6 +23,8 @@ aws sts get-caller-identity || { echo "Error: AWS credentials not configured"; e
 # ==========================================
 
 export AWS_REGION=${AWS_REGION:-us-east-1}
+export AWS_PAGER=""
+export AWS_CLI_AUTO_PROMPT=off
 export APP_IMAGE=${APP_IMAGE:-"REPLACE_WITH_YOUR_ECR_IMAGE"}
 export DB_PASSWORD=${DB_PASSWORD:-"BenchUserStrongPass123!"}
 
@@ -71,13 +73,23 @@ echo ""
 echo "Step 2: Creating security groups..."
 
 # ALB Security Group
-export ALB_SG_ID=$(aws ec2 create-security-group \
-  --group-name java-bench-alb-sg \
-  --description "ALB SG for Java benchmark" \
-  --vpc-id $VPC_ID \
+export ALB_SG_ID=$(aws ec2 describe-security-groups \
+  --filters "Name=group-name,Values=java-bench-alb-sg" "Name=vpc-id,Values=$VPC_ID" \
   --region $AWS_REGION \
-  --query "GroupId" \
-  --output text)
+  --query "SecurityGroups[0].GroupId" \
+  --output text 2>/dev/null || echo "")
+
+if [[ -z "$ALB_SG_ID" || "$ALB_SG_ID" == "None" ]]; then
+  ALB_SG_ID=$(aws ec2 create-security-group \
+    --group-name java-bench-alb-sg \
+    --description "ALB SG for Java benchmark" \
+    --vpc-id $VPC_ID \
+    --region $AWS_REGION \
+    --query "GroupId" \
+    --output text)
+else
+  echo "Reusing existing ALB security group: $ALB_SG_ID"
+fi
 
 echo "ALB Security Group: $ALB_SG_ID"
 
@@ -86,16 +98,26 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 80 \
   --cidr 0.0.0.0/0 \
-  --region $AWS_REGION
+  --region $AWS_REGION 2>/dev/null || true
 
 # ECS Task Security Group
-export ECS_SG_ID=$(aws ec2 create-security-group \
-  --group-name java-bench-ecs-sg \
-  --description "ECS tasks SG for Java benchmark" \
-  --vpc-id $VPC_ID \
+export ECS_SG_ID=$(aws ec2 describe-security-groups \
+  --filters "Name=group-name,Values=java-bench-ecs-sg" "Name=vpc-id,Values=$VPC_ID" \
   --region $AWS_REGION \
-  --query "GroupId" \
-  --output text)
+  --query "SecurityGroups[0].GroupId" \
+  --output text 2>/dev/null || echo "")
+
+if [[ -z "$ECS_SG_ID" || "$ECS_SG_ID" == "None" ]]; then
+  ECS_SG_ID=$(aws ec2 create-security-group \
+    --group-name java-bench-ecs-sg \
+    --description "ECS tasks SG for Java benchmark" \
+    --vpc-id $VPC_ID \
+    --region $AWS_REGION \
+    --query "GroupId" \
+    --output text)
+else
+  echo "Reusing existing ECS security group: $ECS_SG_ID"
+fi
 
 echo "ECS Security Group: $ECS_SG_ID"
 
@@ -104,16 +126,26 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 8080 \
   --source-group $ALB_SG_ID \
-  --region $AWS_REGION
+  --region $AWS_REGION 2>/dev/null || true
 
 # RDS Security Group
-export RDS_SG_ID=$(aws ec2 create-security-group \
-  --group-name java-bench-rds-sg \
-  --description "RDS SG for Java benchmark" \
-  --vpc-id $VPC_ID \
+export RDS_SG_ID=$(aws ec2 describe-security-groups \
+  --filters "Name=group-name,Values=java-bench-rds-sg" "Name=vpc-id,Values=$VPC_ID" \
   --region $AWS_REGION \
-  --query "GroupId" \
-  --output text)
+  --query "SecurityGroups[0].GroupId" \
+  --output text 2>/dev/null || echo "")
+
+if [[ -z "$RDS_SG_ID" || "$RDS_SG_ID" == "None" ]]; then
+  RDS_SG_ID=$(aws ec2 create-security-group \
+    --group-name java-bench-rds-sg \
+    --description "RDS SG for Java benchmark" \
+    --vpc-id $VPC_ID \
+    --region $AWS_REGION \
+    --query "GroupId" \
+    --output text)
+else
+  echo "Reusing existing RDS security group: $RDS_SG_ID"
+fi
 
 echo "RDS Security Group: $RDS_SG_ID"
 
@@ -122,7 +154,7 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 5432 \
   --source-group $ECS_SG_ID \
-  --region $AWS_REGION
+  --region $AWS_REGION 2>/dev/null || true
 
 echo ""
 
@@ -177,7 +209,75 @@ echo "RDS Endpoint: $DB_ENDPOINT"
 echo ""
 
 # ==========================================
-# 4. CREATE ECS CLUSTER
+# 3.1 CONFIGURE RDS PARAMETERS
+# ==========================================
+
+echo "Step 3.1: Creating and configuring RDS parameter group..."
+
+export DB_PARAM_GROUP_NAME="java-bench-pg"
+
+# Create parameter group (matching the RDS engine version)
+aws rds create-db-parameter-group \
+  --db-parameter-group-name $DB_PARAM_GROUP_NAME \
+  --db-parameter-group-family postgres17 \
+  --description "Parameter group for Java benchmark with increased max_connections" \
+  --region $AWS_REGION 2>/dev/null || echo "Parameter group already exists"
+
+echo "Parameter group created/updated: $DB_PARAM_GROUP_NAME"
+
+# Increase max_connections for concurrent load testing
+# Note: max_connections is a static parameter, requires reboot
+aws rds modify-db-parameter-group \
+  --db-parameter-group-name $DB_PARAM_GROUP_NAME \
+  --parameters "ParameterName=max_connections,ParameterValue=250,ApplyMethod=pending-reboot" \
+  --region $AWS_REGION
+
+echo "Database max_connections set to 250 (pending reboot)"
+
+# Modify RDS instance to use the parameter group
+aws rds modify-db-instance \
+  --db-instance-identifier $DB_INSTANCE_ID \
+  --db-parameter-group-name $DB_PARAM_GROUP_NAME \
+  --region $AWS_REGION
+
+echo "RDS instance updated to use parameter group"
+
+# Wait for modification to complete before reboot
+echo "Waiting for RDS modification to complete..."
+aws rds wait db-instance-available \
+  --db-instance-identifier $DB_INSTANCE_ID \
+  --region $AWS_REGION
+
+# Some modifications keep the instance in 'modifying' briefly after the wait
+for i in {1..12}; do
+  DB_STATUS=$(aws rds describe-db-instances \
+    --db-instance-identifier $DB_INSTANCE_ID \
+    --region $AWS_REGION \
+    --query "DBInstances[0].DBInstanceStatus" \
+    --output text)
+  if [[ "$DB_STATUS" == "available" ]]; then
+    break
+  fi
+  echo "RDS status is '$DB_STATUS' (waiting before reboot)..."
+  sleep 10
+done
+
+# Reboot RDS to apply static parameters like max_connections
+echo "Rebooting RDS instance to apply parameter changes..."
+aws rds reboot-db-instance \
+  --db-instance-identifier $DB_INSTANCE_ID \
+  --region $AWS_REGION
+
+echo "Waiting for RDS to come back online after reboot..."
+aws rds wait db-instance-available \
+  --db-instance-identifier $DB_INSTANCE_ID \
+  --region $AWS_REGION
+
+echo "✓ RDS reboot complete, max_connections=250 is now active"
+echo ""
+
+# ==========================================
+# 5. CREATE ECS CLUSTER
 # ==========================================
 
 echo "Step 4: Creating ECS cluster..."
@@ -189,10 +289,35 @@ aws ecs create-cluster \
   --region $AWS_REGION
 
 echo "ECS Cluster created: $ECS_CLUSTER_NAME"
+
+# ==========================================
+# 4.1 ENABLE CONTAINER INSIGHTS
+# ==========================================
+
+echo "Step 4.1: Enabling Container Insights on ECS cluster..."
+
+aws ecs update-cluster-settings \
+  --cluster $ECS_CLUSTER_NAME \
+  --settings name=containerInsights,value=enabled \
+  --region $AWS_REGION
+
+# Verify Container Insights is enabled
+INSIGHTS_STATUS=$(aws ecs describe-clusters \
+  --clusters $ECS_CLUSTER_NAME \
+  --region $AWS_REGION \
+  --query 'clusters[0].clusterSettings[?name==`containerInsights`].value' \
+  --output text)
+
+if [[ "$INSIGHTS_STATUS" == "enabled" ]]; then
+  echo "✓ Container Insights enabled successfully"
+else
+  echo "⚠ Container Insights status: $INSIGHTS_STATUS"
+fi
+
 echo ""
 
 # ==========================================
-# 5. CREATE IAM ROLES
+# 6. CREATE IAM ROLES
 # ==========================================
 
 echo "Step 5: Creating IAM roles..."
@@ -235,6 +360,33 @@ aws iam attach-role-policy \
   --role-name $ECS_TASK_EXEC_ROLE_NAME \
   --policy-arn arn:aws:iam::aws:policy/CloudWatchLogsFullAccess 2>/dev/null || true
 
+# Attach CloudWatch metrics policy for Micrometer
+aws iam attach-role-policy \
+  --role-name $ECS_TASK_EXEC_ROLE_NAME \
+  --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy 2>/dev/null || true
+
+# Create inline policy for CloudWatch PutMetricData
+aws iam put-role-policy \
+  --role-name $ECS_TASK_EXEC_ROLE_NAME \
+  --policy-name cloudwatch-putmetricdata \
+  --policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "cloudwatch:PutMetricData",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeTags",
+          "logs:PutLogEvents",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream"
+        ],
+        "Resource": "*"
+      }
+    ]
+  }' 2>/dev/null || true
+
 export ECS_TASK_EXEC_ROLE_ARN=$(aws iam get-role \
   --role-name $ECS_TASK_EXEC_ROLE_NAME \
   --query "Role.Arn" \
@@ -244,7 +396,7 @@ echo "IAM Role ARN: $ECS_TASK_EXEC_ROLE_ARN"
 echo ""
 
 # ==========================================
-# 6. REGISTER TASK DEFINITION
+# 7. REGISTER TASK DEFINITION
 # ==========================================
 
 echo "Step 6: Registering ECS task definition..."
@@ -256,7 +408,7 @@ cat > /tmp/task-def.json <<EOF
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "512",
-  "memory": "1024",
+  "memory": "2048",
   "executionRoleArn": "$ECS_TASK_EXEC_ROLE_ARN",
   "taskRoleArn": "$ECS_TASK_EXEC_ROLE_ARN",
   "containerDefinitions": [
@@ -285,6 +437,30 @@ cat > /tmp/task-def.json <<EOF
         {
           "name": "SPRING_PROFILES_ACTIVE",
           "value": "ecs"
+        },
+        {
+          "name": "JAVA_TOOL_OPTIONS",
+          "value": "-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError"
+        },
+        {
+          "name": "APP_IMAGE",
+          "value": "$APP_IMAGE"
+        },
+        {
+          "name": "METRICS_CLOUDWATCH_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "METRICS_CLOUDWATCH_NAMESPACE",
+          "value": "JavaBenchmark"
+        },
+        {
+          "name": "METRICS_CLOUDWATCH_STEP",
+          "value": "1m"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "$AWS_REGION"
         }
       ],
       "healthCheck": {
@@ -293,9 +469,9 @@ cat > /tmp/task-def.json <<EOF
           "curl -f http://localhost:8080/actuator/health || exit 1"
         ],
         "interval": 30,
-        "timeout": 5,
+        "timeout": 10,
         "retries": 3,
-        "startPeriod": 60
+        "startPeriod": 120
       },
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -375,7 +551,7 @@ echo "ALB Listener created"
 echo ""
 
 # ==========================================
-# 8. CREATE ECS SERVICE
+# 9. CREATE ECS SERVICE
 # ==========================================
 
 echo "Step 8: Creating ECS service..."

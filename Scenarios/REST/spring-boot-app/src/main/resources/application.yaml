@@ -61,12 +61,20 @@ management:
     export:
       prometheus:
         enabled: true
+      cloudwatch:
+        enabled: ${METRICS_CLOUDWATCH_ENABLED:false}
+        namespace: ${METRICS_CLOUDWATCH_NAMESPACE:JavaBenchmark}
+        step: ${METRICS_CLOUDWATCH_STEP:1m}
+        batch-size: 100
+        enabled-percentile-aggregation: true
     distribution:
       percentiles-histogram:
         http.server.requests: true
     tags:
       application: ${spring.application.name}
       java_version: ${java.version}
+      environment: ${APP_ENV:local}
+      app_image: ${APP_IMAGE:unknown}
 
 logging:
   level:
@@ -76,3 +84,8 @@ logging:
     org.hibernate: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+app:
+  clear-db-on-start: ${CLEAR_DB_ON_START:false}
+  db-stats:
+    enabled: ${APP_DB_STATS_ENABLED:false}
+    interval-ms: ${APP_DB_STATS_INTERVAL_MS:10000}

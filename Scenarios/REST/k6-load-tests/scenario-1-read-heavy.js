@@ -52,7 +52,16 @@ export default function() {
 
 export function setup() {
   // Check application health before test
+  const startDateTime = new Date().toISOString();
+  const startEpoch = Date.now();
+  
+  console.log('========================================');
+  console.log('TEST START TIME');
+  console.log('========================================');
+  console.log('ISO Format: ' + startDateTime);
+  console.log('Epoch (ms): ' + startEpoch);
   console.log('Running setup - checking application health...');
+  
   const health = checkApplicationHealth();
   
   if (health.status !== 200) {
@@ -60,19 +69,35 @@ export function setup() {
   }
   
   return {
-    startTime: Date.now(),
+    startTime: startEpoch,
+    startDateTime: startDateTime,
     testName: 'Read-Heavy',
   };
 }
 
 export function teardown(data) {
   // Verify application is still healthy after test
-  console.log('Running teardown - checking application health...');
-  const health = checkApplicationHealth();
+  const endDateTime = new Date().toISOString();
+  const endEpoch = Date.now();
   
-  data.endTime = Date.now();
+  console.log('========================================');
+  console.log('TEST END TIME');
+  console.log('========================================');
+  console.log('ISO Format: ' + endDateTime);
+  console.log('Epoch (ms): ' + endEpoch);
+  console.log('Running teardown - checking application health...');
+  
+  data.endTime = endEpoch;
+  data.endDateTime = endDateTime;
+  
+  const durationSec = (data.endTime - data.startTime) / 1000;
+  console.log('========================================');
+  console.log('TEST DURATION: ' + durationSec + ' seconds (' + (durationSec / 60).toFixed(2) + ' minutes)');
+  console.log('========================================');
+  
   logScenarioMetrics('Read-Heavy Scenario', data);
   
+  const health = checkApplicationHealth();
   if (health.status !== 200) {
     console.warn(`Application health check failed after test: ${health.status}`);
   }

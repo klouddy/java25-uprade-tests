@@ -4,21 +4,55 @@ spring:
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
     hikari:
-      maximum-pool-size: ${DB_POOL_SIZE:50}
+      maximum-pool-size: ${DB_POOL_SIZE:10}
 
 server:
   port: 8080
   tomcat:
     threads:
-      max: ${TOMCAT_MAX_THREADS:200}
+      max: ${TOMCAT_MAX_THREADS:30}
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus
+        include: health,metrics,prometheus,info
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+      cloudwatch:
+        enabled: true
+        namespace: ${METRICS_CLOUDWATCH_NAMESPACE:JavaBenchmark}
+        step: ${METRICS_CLOUDWATCH_STEP:1m}
+        batch-size: 100
+        enabled-percentile-aggregation: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+    tags:
+      application: spring-boot-benchmark
+      java_version: ${java.version}
+      environment: ecs
+      pod_name: ${HOSTNAME:unknown}
+      app_image: ${APP_IMAGE:unknown}
 
 logging:
   level:
     root: INFO
     com.benchmark.app: INFO
+    org.springframework.web: INFO
+    io.micrometer.cloudwatch2: INFO
+
+app:
+  clear-db-on-start: ${CLEAR_DB_ON_START:false}
+  db-stats:
+    enabled: ${APP_DB_STATS_ENABLED:false}
+    interval-ms: ${APP_DB_STATS_INTERVAL_MS:10000}

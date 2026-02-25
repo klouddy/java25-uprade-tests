@@ -15,3 +15,5 @@ logging:
     root: INFO
     com.benchmark.app: DEBUG
     org.springframework.web: DEBUG
+app:
+  clear-db-on-start: ${CLEAR_DB_ON_START:false}
