@@ -276,37 +276,37 @@ When comparing Java versions, ensure results are statistically valid:
 
 | Metric Category | Measurement | Java 17 (Baseline) | Java 21 | Java 25 | Notes |
 |-----------------|-------------|---------|---------|---------|-------|
-| **Memory Usage** | Peak Heap Used (MB) | 358 |  |  | From jvm_memory_usage_bytes max |
-|                 | Average Heap Used (MB) | 307 |  |  | From jvm_memory_usage_bytes mean during load |
-|                 | Required ECS Memory (MB) |  |  |  | Peak + 25% buffer |
-|                 | Memory Savings vs Java 17 (%) | — |  |  | Calculated from average heap |
-| **CPU Usage** | Avg CPU Utilization (%) | 37 |  |  | From CloudWatch Container Insights or ECS metrics |
-|               | Peak CPU Utilization (%) | 43.1 |  |  | Maximum spike during test |
-|               | CPU Savings vs Java 17 (%) | — |  |  | Calculated from average CPU |
+| **Memory Usage** | Peak Heap Used (MB) | 872 | 903 |  | From CloudWatch Container Insights (88.25% of 1024 MB) |
+|                 | Average Heap Used (MB) | 372 | 512 |  | From CloudWatch Container Insights (~50% average during load) |
+|                 | Required ECS Memory (MB) | 1090 | 1129 |  | Peak + 25% buffer (903 × 1.25) |
+|                 | Memory Savings vs Java 17 (%) | — | -37.6 |  | (372 - 512) / 372 = -38% (higher due to load demands) |
+| **CPU Usage** | Avg CPU Utilization (%) | 37.5 | 50 |  | From CloudWatch Container Insights (~50% during load) |
+|               | Peak CPU Utilization (%) | 99.97 | 99.79 |  | Maximum spike during test |
+|               | CPU Savings vs Java 17 (%) | — | -33.3 |  | (37.5 - 50) / 37.5 = -33% (higher CPU under full load) |
 | **Throughput & Latency** |  |  |  |  |  |
-|  | Max Sustainable RPS (Scenario 1) | 213 |  |  | From k6 Scenario 1 (Read-Heavy) |
+|  | Scenario 1 Max RPS | 144.48 | 144.5 |  | Read-Heavy (60% reads, 20% searches, 20% writes) - Updated Java 17 baseline |
+|  | Scenario 1 Avg Latency (ms) | 135.89 | 137.94 |  | p50: Java 17=55.37ms, Java 21=55.86ms - virtually identical |
+|  | Scenario 1 p(90) Latency (ms) | 254.09 | 276.17 |  | 90th percentile - Java 21 slightly higher |
+|  | Scenario 1 p(95) Latency (ms) | 544.31 | 544.13 |  | 95th percentile - virtually identical |
+|  | Scenario 1 Error Rate (%) | 1.13 | 1.17 |  | Java 17: 1,378/121,476; Java 21: 1,428/121,562 |
 |  | Max Sustainable RPS (Scenario 3) |  |  |  | From k6 Scenario 3 (Write-Heavy) |
-|  | Throughput Increase vs Java 17 (%) | — |  |  | Calculated from max RPS |
-|  | p95 Latency - Scenario 1 (ms) | 49 |  |  | Read-Heavy workload |
-|  | p95 Latency - Scenario 3 (ms) |  |  |  | Write-Heavy workload |
-|  | p99 Latency - Scenario 1 (ms) | 101 |  |  | 99th percentile |
+|  | p99 Latency - Scenario 1 (ms) | 1590 | 1510 |  | 99th percentile from k6 threshold output |
 |  | p99 Latency - Scenario 3 (ms) |  |  |  | 99th percentile |
-|  | Latency Improvement vs Java 17 (%) | — |  |  | Lower is better |
-| **Garbage Collection** | GC Pause Count per 10 min | 1552 |  |  | From GC logs grep "Pause" |
-|                        | GC Total Pause Time per 10 min (ms) | 7243.43 |  |  | Sum of all pauses in 10-min window |
-|                        | GC CPU Time (% of total) |  |  |  | GC time / total CPU time |
-|                        | Max GC Pause Duration (ms) | 100.479 |  |  | Worst-case single pause |
-|                        | GC Efficiency Improvement vs Java 17 (%) | — |  |  | (Pause count reduction) |
-| **Startup Time** | Cold Start Duration (seconds) |  |  |  | Scenario 6 - time to health check |
-|                 | Warm Start Duration (seconds) |  |  |  | Scenario 7 - time to recovery |
-|                 | Startup Time Improvement vs Java 17 (%) | — |  |  | Lower is better |
-| **Cost Per Task/Month** | Total Monthly Cost per Task ($) |  |  |  | See cost calculation below |
-|                        | Monthly Cost Savings vs Java 17 ($) | — |  |  | J17 cost - Jxx cost |
-|                        | Monthly Cost Savings vs Java 17 (%) | — |  |  | (Savings / J17 cost) × 100 |
-| **Cluster-Level Cost** | Number of Tasks in Cluster |  |  |  | Use consistent # across tests |
-|                        | Total Monthly Cluster Cost ($) |  |  |  | Per-task cost × # tasks |
-|                        | Quarterly Cost Savings vs Java 17 ($) | — |  |  | Monthly savings × 3 |
-|                        | Annual Cost Savings vs Java 17 ($) | — |  |  | Monthly savings × 12 |
+| **Garbage Collection** | GC Pause Count per 10 min | 369 | 195 |  | Java 21 Run 2: 273 pauses in 14 min = 195 per 10 min (47.2% fewer) |
+|                        | GC Total Pause Time per 10 min (ms) | 3063 | 2487 |  | Java 21 Run 2: 3.482s total in 14 min = 2,487ms per 10 min (-18.8%) |
+|                        | GC CPU Time (% of total) | ~2-3% | 0% |  | Spring Actuator reports 0% GC CPU overhead for Java 21 |
+|                        | Max GC Pause Duration (ms) | 315.883 | ~45 |  | Java 21 Run 2 individual pause duration from Prometheus bucket analysis |
+|                        | GC Efficiency Improvement vs Java 17 (%) | — | 47.2 |  | Pause count reduction: (369 - 195) / 369 = 47.2% fewer pauses (Java 21 Run 2) |
+| **Startup Time** | Cold Start Duration (seconds) |  |  |  | Scenario 6 - time from task launch to health check response |
+|                 | Warm Start Duration (seconds) |  |  |  | Scenario 7 - time to recovery/warmup after restart |
+|                 | Startup Time Improvement vs Java 17 (%) | — |  |  | Lower is better - pending testing |
+| **Cost Per Task/Month** | Total Monthly Cost per Task ($) | 42.17 | 42.17 |  | (0.5 × $0.04731 + 1.0 × $0.00520) × 730 = $42.17 (identical task size) |
+|                        | Monthly Cost Savings vs Java 17 ($) | — | 0 |  | No compute cost difference - same task allocation |
+|                        | Monthly Cost Savings vs Java 17 (%) | — | 0 |  | Same vCPU/memory, so identical cost |
+| **Cluster-Level Cost** | Number of Tasks in Cluster | 2 | 2 |  | Consistent 2-task deployment for testing |
+|                        | Total Monthly Cluster Cost ($) | 84.34 | 84.34 |  | Per-task cost × 2 tasks |
+|                        | Quarterly Cost Savings vs Java 17 ($) | — | 0 |  | No difference at same scale |
+|                        | Annual Cost Savings vs Java 17 ($) | — | 0 |  | Operational benefits (lower GC overhead) offset any compute equivalence |
 
 
 # Cost Calculation Inputs & Formulas
