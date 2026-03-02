@@ -31,7 +31,8 @@ RUN ./mvnw -Pnative native:compile \
     -DskipTests \
     -Dorg.graalvm.buildtools.native.option=--enable-url-protocols=http,https \
     -Dorg.graalvm.buildtools.native.option=-J-Xmx3g \
-    -Dorg.graalvm.buildtools.native.option=-J-XX:+UseSerialGC
+    -Dorg.graalvm.buildtools.native.option=-J-XX:+UseSerialGC \
+    -Dorg.graalvm.nativeimage.buildArgs=--initialize-at-run-time=org.apache.commons.logging.LogFactoryService,org.apache.commons.logging.LogFactory
 
 # Runtime stage - use minimal distroless or alpine image
 FROM oraclelinux:9-slim
