@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "promUrl": "http://java-bench-alb-832402291.us-east-1.elb.amazonaws.com/prometheus",
+    "startTime": "2026-03-02T14:16:30.165Z",
+    "endTime": "2026-03-02T14:30:31.387Z",
+    "step": "60s",
+    "generatedAt": "2026-03-02T15:05:02.074Z"
+  },
+  "metrics": {
+    "heap-used-bytes": [],
+    "non-heap-used-bytes": [],
+    "gc-pause-rate-5m": [],
+    "gc-pause-max": [],
+    "live-threads": [],
+    "process-cpu-usage": [],
+    "system-cpu-usage": [],
+    "heap-committed-bytes": [],
+    "classes-loaded": [],
+    "gc-count-rate-5m": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-02-27T19:18:20.014Z",
+  "scenarioType": "REST",
+  "scenario": "Read Heavy",
+  "javaVersion": "17",
+  "jvmOptions": "-XX:+UseG1GC -Xmx1024m",
+  "cpu": 512,
+  "memory": 2048,
+  "virtualThreadsEnabled": false,
+  "dbPoolSize": 20,
+  "scenarioNumber": 1,
+  "dockerImage": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-java17-1-2026-02-27-1",
+  "imageTag": "benchmark-app:rest-java17-1-2026-02-27-1"
+}

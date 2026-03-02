@@ -1,0 +1,103 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-1-read-heavy.js --out json=results/java21/scenario1-gc-pause/k6-out.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-1-read-heavy.js
+        output: json (results/java21/scenario1-gc-pause/k6-out.json)
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 500 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] ========================================      source=console
+INFO[0000] TEST START TIME                               source=console
+INFO[0000] ========================================      source=console
+INFO[0000] ISO Format: 2026-02-25T20:30:19.540Z          source=console
+INFO[0000] Epoch (ms): 1772051419540                     source=console
+INFO[0000] Running setup - checking application health...  source=console
+WARN[0272] Request Failed                                error="unexpected EOF"
+WARN[0272] Request Failed                                error="unexpected EOF"
+WARN[0272] Request Failed                                error="unexpected EOF"
+WARN[0272] Request Failed                                error="unexpected EOF"
+WARN[0272] Request Failed                                error="unexpected EOF"
+WARN[0272] Request Failed                                error="unexpected EOF"
+INFO[0841] ========================================      source=console
+INFO[0841] TEST END TIME                                 source=console
+INFO[0841] ========================================      source=console
+INFO[0841] ISO Format: 2026-02-25T20:44:20.930Z          source=console
+INFO[0841] Epoch (ms): 1772052260930                     source=console
+INFO[0841] Running teardown - checking application health...  source=console
+INFO[0841] ========================================      source=console
+INFO[0841] TEST DURATION: 841.39 seconds (14.02 minutes)  source=console
+INFO[0841] ========================================      source=console
+INFO[0841]
+========== Read-Heavy Scenario ==========    source=console
+INFO[0841] Start time: 2026-02-25T20:30:19.540Z          source=console
+INFO[0841] End time: 2026-02-25T20:44:20.930Z            source=console
+INFO[0841] Duration: 841.39 seconds                      source=console
+INFO[0841] =======================================       source=console
+WARN[0841] Application health check failed after test: 503  source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<1000' p(99)=1s
+    ✓ 'p(95)<500' p(95)=107.59ms
+    ✓ 'p(50)<100' p(50)=44.61ms
+
+    http_req_failed
+    ✗ 'rate<0.05' rate=91.63%
+
+    http_reqs
+    ✓ 'count>0' count=125452
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 250902 298.169132/s
+    checks_succeeded...: 53.16% 133401 out of 250902
+    checks_failed......: 46.83% 117501 out of 250902
+
+    ✗ Health check status is 200
+      ↳  50% — ✓ 1 / ✗ 1
+    ✗ GET /customers/{id} status is 200
+      ↳  8% — ✓ 6287 / ✗ 69060
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  98% — ✓ 74220 / ✗ 1127
+    ✗ GET /customers?search status is 200
+      ↳  8% — ✓ 2103 / ✗ 22946
+    ✗ GET /customers?search response time < 500ms
+      ↳  95% — ✓ 24027 / ✗ 1022
+    ✗ POST /customers status is 201 or 200
+      ↳  8% — ✓ 2098 / ✗ 22956
+    ✗ POST /customers response time < 500ms
+      ↳  98% — ✓ 24665 / ✗ 389
+
+    HTTP
+    http_req_duration..............: avg=85.24ms  min=31.58ms med=44.61ms max=10.05s p(90)=52.05ms p(95)=107.59ms
+      { expected_response:true }...: avg=346.32ms min=35.9ms  med=122.8ms max=7.46s  p(90)=986.6ms p(95)=1.41s
+    http_req_failed................: 91.63% 114963 out of 125452
+    http_reqs......................: 125452 149.085755/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.57s    min=70.69ms med=1.56s   max=12.73s p(90)=2.36s   p(95)=2.51s
+    iterations.....................: 125450 149.083378/s
+    vus............................: 1      min=1                max=500
+    vus_max........................: 500    min=500              max=500
+
+    NETWORK
+    data_received..................: 1.6 GB 1.9 MB/s
+    data_sent......................: 22 MB  26 kB/s
+
+
+
+
+running (14m01.5s), 000/500 VUs, 125450 complete and 0 interrupted iterations
+default ✓ [======================================] 000/500 VUs  14m0s
+ERRO[0841] thresholds on metrics 'http_req_duration, http_req_failed' have been crossed

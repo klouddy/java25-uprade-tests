@@ -6,6 +6,7 @@ const https = require('https');
 const http = require('http');
 const { URL } = require('url');
 const { ECSClient, DescribeServicesCommand, DescribeTaskDefinitionCommand } = require('@aws-sdk/client-ecs');
+const { RDSClient, DescribeDBInstancesCommand } = require('@aws-sdk/client-rds');
 const { CloudWatchClient, GetMetricStatisticsCommand } = require('@aws-sdk/client-cloudwatch');
 
 function readJson(filePath) {
@@ -302,6 +303,114 @@ async function fetchEcsInfo(ecsConfig) {
   };
 }
 
+async function fetchRdsInfo(rdsConfig) {
+  if (!rdsConfig || !rdsConfig.instanceId || !rdsConfig.region) {
+    return null;
+  }
+
+  const client = new RDSClient({ region: rdsConfig.region });
+
+  const response = await client.send(new DescribeDBInstancesCommand({
+    DBInstanceIdentifier: rdsConfig.instanceId
+  }));
+
+  const instance = (response.DBInstances || [])[0];
+  if (!instance) {
+    throw new Error(`RDS instance not found: ${rdsConfig.instanceId}`);
+  }
+
+  return {
+    instanceId: instance.DBInstanceIdentifier,
+    instanceClass: instance.DBInstanceClass,
+    engine: instance.Engine,
+    engineVersion: instance.EngineVersion,
+    allocatedStorage: instance.AllocatedStorage,
+    status: instance.DBInstanceStatus,
+    masterUsername: instance.MasterUsername,
+    databaseName: instance.DBName,
+    port: instance.Endpoint?.Port ?? null,
+    multiAZ: instance.MultiAZ ?? false,
+    backupRetentionPeriod: instance.BackupRetentionPeriod ?? null,
+    preferredBackupWindow: instance.PreferredBackupWindow ?? null,
+    preferredMaintenanceWindow: instance.PreferredMaintenanceWindow ?? null,
+    maxAllocatedStorage: instance.MaxAllocatedStorage ?? null
+  };
+}
+
+async function fetchRdsMetrics(rdsConfig, runConfig) {
+  if (!rdsConfig || !rdsConfig.instanceId || !rdsConfig.region) {
+    return null;
+  }
+  if (!runConfig || !runConfig.startTime || !runConfig.endTime) {
+    return null;
+  }
+
+  const client = new CloudWatchClient({ region: rdsConfig.region });
+  const startTime = new Date(runConfig.startTime);
+  const endTime = new Date(runConfig.endTime);
+  const period = rdsConfig.metricsPeriodSeconds || 60;
+
+  async function getStats(metricName, stats) {
+    const response = await client.send(new GetMetricStatisticsCommand({
+      Namespace: 'AWS/RDS',
+      MetricName: metricName,
+      Dimensions: [
+        { Name: 'DBInstanceIdentifier', Value: rdsConfig.instanceId }
+      ],
+      StartTime: startTime,
+      EndTime: endTime,
+      Period: period,
+      Statistics: stats
+    }));
+    return response.Datapoints || [];
+  }
+
+  const cpuAverage = await getStats('CPUUtilization', ['Average']);
+  const cpuMaximum = await getStats('CPUUtilization', ['Maximum']);
+  const connAverage = await getStats('DatabaseConnections', ['Average']);
+  const connMaximum = await getStats('DatabaseConnections', ['Maximum']);
+  const readLatAverage = await getStats('ReadLatency', ['Average']);
+  const readLatMaximum = await getStats('ReadLatency', ['Maximum']);
+  const writeLatAverage = await getStats('WriteLatency', ['Average']);
+  const writeLatMaximum = await getStats('WriteLatency', ['Maximum']);
+  const readThrAverage = await getStats('ReadThroughput', ['Average']);
+  const writeThrAverage = await getStats('WriteThroughput', ['Average']);
+  const readOpsAverage = await getStats('ReadIOPS', ['Average']);
+  const writeOpsAverage = await getStats('WriteIOPS', ['Average']);
+
+  return {
+    periodSeconds: period,
+    CPUUtilization: {
+      Average: summarizeDatapoints(cpuAverage, 'Average'),
+      Maximum: summarizeDatapoints(cpuMaximum, 'Maximum')
+    },
+    DatabaseConnections: {
+      Average: summarizeDatapoints(connAverage, 'Value'),
+      Maximum: summarizeDatapoints(connMaximum, 'Value')
+    },
+    ReadLatency: {
+      Average: summarizeDatapoints(readLatAverage, 'Average'),
+      Maximum: summarizeDatapoints(readLatMaximum, 'Maximum')
+    },
+    WriteLatency: {
+      Average: summarizeDatapoints(writeLatAverage, 'Average'),
+      Maximum: summarizeDatapoints(writeLatMaximum, 'Maximum')
+    },
+    ReadThroughput: {
+      Average: summarizeDatapoints(readThrAverage, 'Average')
+    },
+    WriteThroughput: {
+      Average: summarizeDatapoints(writeThrAverage, 'Average')
+    },
+    ReadIOPS: {
+      Average: summarizeDatapoints(readOpsAverage, 'Average')
+    },
+    WriteIOPS: {
+      Average: summarizeDatapoints(writeOpsAverage, 'Average')
+    }
+  };
+}
+
 async function fetchContainerMetrics(ecsConfig, runConfig) {
   if (!ecsConfig || !ecsConfig.clusterName || !ecsConfig.serviceName || !ecsConfig.region) {
     return null;
@@ -443,6 +552,57 @@ function formatMarkdown(summary) {
     }
   }
 
+  if (summary.rds) {
+    lines.push('');
+    lines.push('## RDS Database');
+    lines.push('');
+
+    if (summary.rds.error) {
+      lines.push(`- **RDS Lookup Error**: ${summary.rds.error}`);
+    } else {
+      lines.push(`- **Instance ID**: ${summary.rds.instanceId}`);
+      lines.push(`- **Instance Class**: ${summary.rds.instanceClass}`);
+      lines.push(`- **Engine**: ${summary.rds.engine} ${summary.rds.engineVersion}`);
+      lines.push(`- **Allocated Storage**: ${summary.rds.allocatedStorage} GB`);
+      lines.push(`- **Max Allocated Storage**: ${summary.rds.maxAllocatedStorage ?? 'n/a'} GB`);
+      lines.push(`- **Status**: ${summary.rds.status}`);
+      lines.push(`- **Multi-AZ**: ${summary.rds.multiAZ ? 'Yes' : 'No'}`);
+      lines.push(`- **Database**: ${summary.rds.databaseName}`);
+    }
+  }
+
+  if (summary.rdsAws) {
+    lines.push('');
+    lines.push('## RDS Metrics');
+    lines.push('');
+
+    if (summary.rdsAws.error) {
+      lines.push(`- **RDS Metrics Error**: ${summary.rdsAws.error}`);
+    } else {
+      const cpu = summary.rdsAws.CPUUtilization;
+      const conn = summary.rdsAws.DatabaseConnections;
+      const readLat = summary.rdsAws.ReadLatency;
+      const writeLat = summary.rdsAws.WriteLatency;
+      const readThr = summary.rdsAws.ReadThroughput;
+      const writeThr = summary.rdsAws.WriteThroughput;
+      const readOps = summary.rdsAws.ReadIOPS;
+      const writeOps = summary.rdsAws.WriteIOPS;
+
+      lines.push(`- **CPU Utilization Average**: min ${cpu.Average.summary?.min?.toFixed(2)}%, max ${cpu.Average.summary?.max?.toFixed(2)}%, avg ${cpu.Average.summary?.avg?.toFixed(2)}%`);
+      lines.push(`- **CPU Utilization Maximum**: min ${cpu.Maximum.summary?.min?.toFixed(2)}%, max ${cpu.Maximum.summary?.max?.toFixed(2)}%, avg ${cpu.Maximum.summary?.avg?.toFixed(2)}%`);
+      lines.push(`- **Connections Average**: min ${conn.Average.summary?.min?.toFixed(1)}, max ${conn.Average.summary?.max?.toFixed(1)}, avg ${conn.Average.summary?.avg?.toFixed(1)}`);
+      lines.push(`- **Connections Maximum**: min ${conn.Maximum.summary?.min?.toFixed(1)}, max ${conn.Maximum.summary?.max?.toFixed(1)}, avg ${conn.Maximum.summary?.avg?.toFixed(1)}`);
+      lines.push(`- **Read Latency Average**: min ${readLat.Average.summary?.min?.toFixed(3)} ms, max ${readLat.Average.summary?.max?.toFixed(3)} ms, avg ${readLat.Average.summary?.avg?.toFixed(3)} ms`);
+      lines.push(`- **Read Latency Maximum**: min ${readLat.Maximum.summary?.min?.toFixed(3)} ms, max ${readLat.Maximum.summary?.max?.toFixed(3)} ms, avg ${readLat.Maximum.summary?.avg?.toFixed(3)} ms`);
+      lines.push(`- **Write Latency Average**: min ${writeLat.Average.summary?.min?.toFixed(3)} ms, max ${writeLat.Average.summary?.max?.toFixed(3)} ms, avg ${writeLat.Average.summary?.avg?.toFixed(3)} ms`);
+      lines.push(`- **Write Latency Maximum**: min ${writeLat.Maximum.summary?.min?.toFixed(3)} ms, max ${writeLat.Maximum.summary?.max?.toFixed(3)} ms, avg ${writeLat.Maximum.summary?.avg?.toFixed(3)} ms`);
+      lines.push(`- **Read Throughput Average**: min ${readThr.Average.summary?.min?.toFixed(0)} bytes/sec, max ${readThr.Average.summary?.max?.toFixed(0)} bytes/sec, avg ${readThr.Average.summary?.avg?.toFixed(0)} bytes/sec`);
+      lines.push(`- **Write Throughput Average**: min ${writeThr.Average.summary?.min?.toFixed(0)} bytes/sec, max ${writeThr.Average.summary?.max?.toFixed(0)} bytes/sec, avg ${writeThr.Average.summary?.avg?.toFixed(0)} bytes/sec`);
+      lines.push(`- **Read IOPS Average**: min ${readOps.Average.summary?.min?.toFixed(1)}, max ${readOps.Average.summary?.max?.toFixed(1)}, avg ${readOps.Average.summary?.avg?.toFixed(1)}`);
+      lines.push(`- **Write IOPS Average**: min ${writeOps.Average.summary?.min?.toFixed(1)}, max ${writeOps.Average.summary?.max?.toFixed(1)}, avg ${writeOps.Average.summary?.avg?.toFixed(1)}`);
+    }
+  }
+
   lines.push('');
   lines.push('## Files Used');
   lines.push('');
@@ -495,6 +655,28 @@ async function main() {
     }
   }
 
+  let rdsSummary = null;
+  if (config.rds) {
+    try {
+      rdsSummary = await fetchRdsInfo(config.rds);
+    } catch (error) {
+      rdsSummary = { error: error.message };
+    }
+  }
+
+  let rdsAwsSummary = null;
+  if (config.rds && config.rds.fetchMetrics) {
+    try {
+      rdsAwsSummary = await fetchRdsMetrics(config.rds, config.run);
+      const rdsStatsOut = path.join(outputDir, 'rds-stats.json');
+      writeFile(rdsStatsOut, JSON.stringify(rdsAwsSummary, null, 2));
+      console.log(`Wrote RDS stats: ${rdsStatsOut}`);
+    } catch (error) {
+      rdsAwsSummary = { error: error.message };
+      console.error(`Error fetching RDS metrics: ${error.message}`);
+    }
+  }
+
   let containerAwsSummary = null;
   if (config.ecs && config.ecs.fetchMetrics) {
     try {
@@ -514,6 +696,8 @@ async function main() {
     containerAws: containerAwsSummary,
     prometheus: promSummary,
     ecs: ecsSummary,
+    rds: rdsSummary,
+    rdsAws: rdsAwsSummary,
     files: files,
     generatedAt: new Date().toISOString()
   };

@@ -2,6 +2,10 @@ spring:
   application:
     name: spring-boot-kafka-benchmark
 
+  threads:
+    virtual:
+      enabled: ${VIRTUAL_THREADS_ENABLED:true}
+
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     

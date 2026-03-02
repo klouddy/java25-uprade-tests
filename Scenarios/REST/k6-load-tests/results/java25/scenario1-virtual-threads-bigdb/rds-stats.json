@@ -1,0 +1,67 @@
+{
+  "periodSeconds": 60,
+  "CPUUtilization": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    },
+    "Maximum": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "DatabaseConnections": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    },
+    "Maximum": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "ReadLatency": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    },
+    "Maximum": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "WriteLatency": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    },
+    "Maximum": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "ReadThroughput": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "WriteThroughput": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "ReadIOPS": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    }
+  },
+  "WriteIOPS": {
+    "Average": {
+      "summary": null,
+      "datapoints": []
+    }
+  }
+}

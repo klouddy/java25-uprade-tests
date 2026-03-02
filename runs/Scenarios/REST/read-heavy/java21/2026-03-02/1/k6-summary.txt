@@ -1,0 +1,92 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-1-read-heavy.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/read-heavy/java21/2026-03-02/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-1-read-heavy.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/read-heavy/java21/2026-03-02/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 500 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] ========================================      source=console
+INFO[0000] TEST START TIME                               source=console
+INFO[0000] ========================================      source=console
+INFO[0000] ISO Format: 2026-03-02T16:20:27.967Z          source=console
+INFO[0000] Epoch (ms): 1772468427967                     source=console
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0841] ========================================      source=console
+INFO[0841] TEST END TIME                                 source=console
+INFO[0841] ========================================      source=console
+INFO[0841] ISO Format: 2026-03-02T16:34:29.435Z          source=console
+INFO[0841] Epoch (ms): 1772469269435                     source=console
+INFO[0841] Running teardown - checking application health...  source=console
+INFO[0841] ========================================      source=console
+INFO[0841] TEST DURATION: 841.468 seconds (14.02 minutes)  source=console
+INFO[0841] ========================================      source=console
+INFO[0841]
+========== Read-Heavy Scenario ==========    source=console
+INFO[0841] Start time: 2026-03-02T16:20:27.967Z          source=console
+INFO[0841] End time: 2026-03-02T16:34:29.435Z            source=console
+INFO[0841] Duration: 841.468 seconds                     source=console
+INFO[0841] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<1000' p(99)=1.19s
+    ✗ 'p(95)<500' p(95)=598.65ms
+    ✓ 'p(50)<100' p(50)=56.42ms
+
+    http_req_failed
+    ✓ 'rate<0.05' rate=1.37%
+
+    http_reqs
+    ✓ 'count>0' count=120612
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 241222 286.635869/s
+    checks_succeeded...: 96.37% 232468 out of 241222
+    checks_failed......: 3.62%  8754 out of 241222
+
+    ✓ Health check status is 200
+    ✓ GET /customers/{id} status is 200
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  96% — ✓ 70122 / ✗ 2538
+    ✓ POST /customers status is 201 or 200
+    ✗ POST /customers response time < 500ms
+      ↳  95% — ✓ 22783 / ✗ 987
+    ✓ GET /customers?search status is 200
+    ✗ GET /customers?search response time < 500ms
+      ↳  78% — ✓ 18951 / ✗ 5229
+
+    HTTP
+    http_req_duration..............: avg=152.65ms min=34.51ms med=56.42ms max=3.97s p(90)=416.58ms p(95)=598.65ms
+      { expected_response:true }...: avg=154.11ms min=34.51ms med=56.77ms max=3.97s p(90)=420.49ms p(95)=602.09ms
+    http_req_failed................: 1.37%  1653 out of 120612
+    http_reqs......................: 120612 143.319123/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.64s    min=76.38ms med=1.63s   max=5.57s p(90)=2.46s    p(95)=2.63s
+    iterations.....................: 120610 143.316746/s
+    vus............................: 3      min=1              max=499
+    vus_max........................: 500    min=500            max=500
+
+    NETWORK
+    data_received..................: 4.3 GB 5.1 MB/s
+    data_sent......................: 20 MB  24 kB/s
+
+
+
+
+running (14m01.6s), 000/500 VUs, 120610 complete and 0 interrupted iterations
+default ✓ [======================================] 000/500 VUs  14m0s
+ERRO[0841] thresholds on metrics 'http_req_duration' have been crossed

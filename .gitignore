@@ -1,3 +1,4 @@
 Scenarios/REST/k6-load-tests/results-*/
 /Scenarios/REST/k6-load-tests/results/**/k6*.json
 sum-results/node_modules/
+**/k6*.json

@@ -1,17 +1,17 @@
 {
-  "inputDir": "../Scenarios/REST/k6-load-tests/results/java21/scenario1",
-  "outputDir": "../Scenarios/REST/k6-load-tests/results/java21/scenario1",
+  "inputDir": "/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/read-heavy/java25/2026-03-02/2",
+  "outputDir": "/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/read-heavy/java25/2026-03-02/2",
   "files": {
     "k6Summary": "k6-summary.txt"
   },
   "run": {
-    "javaVersion": "21",
+    "javaVersion": "25",
     "scenario": "1",
-    "startTime": "2026-02-25T17:31:38.245Z",
-    "endTime": "2026-02-25T17:45:40.030Z",
-    "albUrl": "http://java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+    "startTime": "2026-03-02T20:24:22.520Z",
+    "endTime": "2026-03-02T20:38:24.174Z",
+    "albUrl": "http://java-bench-alb-1102733014.us-east-1.elb.amazonaws.com",
     "jvm": {
-      "settings": "-Xmx1024m -XX:+UseG1GC"
+      "settings": "-XX:+UseG1GC -Xmx512m"
     }
   },
   "prometheus": {
@@ -22,6 +22,12 @@
     "region": "us-east-1",
     "clusterName": "java-bench-cluster",
     "serviceName": "java-bench-service",
+    "fetchMetrics": true,
+    "metricsPeriodSeconds": 60
+  },
+  "rds": {
+    "instanceId": "java-bench-db",
+    "region": "us-east-1",
     "fetchMetrics": true,
     "metricsPeriodSeconds": 60
   }

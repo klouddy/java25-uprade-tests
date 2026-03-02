@@ -439,10 +439,6 @@ cat > /tmp/task-def.json <<EOF
           "value": "ecs"
         },
         {
-          "name": "JAVA_TOOL_OPTIONS",
-          "value": "-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError"
-        },
-        {
           "name": "APP_IMAGE",
           "value": "$APP_IMAGE"
         },

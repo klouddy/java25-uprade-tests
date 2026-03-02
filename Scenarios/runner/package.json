@@ -1,0 +1,38 @@
+{
+  "name": "benchmark-runner",
+  "version": "1.0.0",
+  "description": "CLI tool for configuring Java benchmark runs",
+  "main": "index.js",
+  "bin": {
+    "benchmark-runner": "./setup-run.js"
+  },
+  "scripts": {
+    "setup": "node setup-run.js",
+    "aws-bootstrap": "node aws-bootstrap-cli.js",
+    "deploy-task": "node deploy-task-cli.js",
+    "aws-cleanup": "node aws-cleanup-cli.js"
+  },
+  "keywords": [
+    "benchmark",
+    "java",
+    "performance",
+    "testing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-ec2": "^3.500.0",
+    "@aws-sdk/client-rds": "^3.500.0",
+    "@aws-sdk/client-ecs": "^3.500.0",
+    "@aws-sdk/client-elastic-load-balancing-v2": "^3.500.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.500.0",
+    "@aws-sdk/client-iam": "^3.500.0",
+    "@oclif/core": "^3.26.5",
+    "@oclif/plugin-help": "^6.0.18",
+    "inquirer": "^8.2.5",
+    "chalk": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

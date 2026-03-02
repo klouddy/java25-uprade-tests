@@ -1,0 +1,95 @@
+jromero@MC02DW3HTMD6P k6-load-tests % echo $BASE_URL
+http://java-bench-alb-1688584286.us-east-1.elb.amazonaws.com
+jromero@MC02DW3HTMD6P k6-load-tests % export BASE_URL="http://java-bench-alb-292060561.us-east-1.elb.amazonaws.com"
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-1-read-heavy.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/read-heavy/java21/2026-03-02/2/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-1-read-heavy.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/read-heavy/java21/2026-03-02/2/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 500 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] ========================================      source=console
+INFO[0000] TEST START TIME                               source=console
+INFO[0000] ========================================      source=console
+INFO[0000] ISO Format: 2026-03-02T18:37:36.436Z          source=console
+INFO[0000] Epoch (ms): 1772476656436                     source=console
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0842] ========================================      source=console
+INFO[0842] TEST END TIME                                 source=console
+INFO[0842] ========================================      source=console
+INFO[0842] ISO Format: 2026-03-02T18:51:39.174Z          source=console
+INFO[0842] Epoch (ms): 1772477499174                     source=console
+INFO[0842] Running teardown - checking application health...  source=console
+INFO[0842] ========================================      source=console
+INFO[0842] TEST DURATION: 842.738 seconds (14.05 minutes)  source=console
+INFO[0842] ========================================      source=console
+INFO[0842]
+========== Read-Heavy Scenario ==========    source=console
+INFO[0842] Start time: 2026-03-02T18:37:36.436Z          source=console
+INFO[0842] End time: 2026-03-02T18:51:39.174Z            source=console
+INFO[0842] Duration: 842.738 seconds                     source=console
+INFO[0842] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<1000' p(99)=1.52s
+    ✗ 'p(95)<500' p(95)=1.02s
+    ✓ 'p(50)<100' p(50)=64.45ms
+
+    http_req_failed
+    ✓ 'rate<0.05' rate=1.27%
+
+    http_reqs
+    ✓ 'count>0' count=115665
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 231328 274.463906/s
+    checks_succeeded...: 92.91% 214943 out of 231328
+    checks_failed......: 7.08%  16385 out of 231328
+
+    ✓ Health check status is 200
+    ✓ POST /customers status is 201 or 200
+    ✗ POST /customers response time < 500ms
+      ↳  87% — ✓ 20071 / ✗ 2941
+    ✓ GET /customers/{id} status is 200
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  88% — ✓ 61793 / ✗ 7729
+    ✓ GET /customers?search status is 200
+    ✗ GET /customers?search response time < 500ms
+      ↳  75% — ✓ 17414 / ✗ 5715
+
+    HTTP
+    http_req_duration..............: avg=220.13ms min=34.53ms med=64.45ms max=2.79s p(90)=708.73ms p(95)=1.02s
+      { expected_response:true }...: avg=222.28ms min=34.53ms med=65.18ms max=2.79s p(90)=715.46ms p(95)=1.02s
+    http_req_failed................: 1.27%  1473 out of 115665
+    http_reqs......................: 115665 137.233139/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.71s    min=80.21ms med=1.7s    max=4.94s p(90)=2.55s    p(95)=2.8s
+    iterations.....................: 115663 137.230766/s
+    vus............................: 2      min=1              max=500
+    vus_max........................: 500    min=500            max=500
+
+    NETWORK
+    data_received..................: 4.0 GB 4.8 MB/s
+    data_sent......................: 20 MB  23 kB/s
+
+
+
+
+running (14m02.8s), 000/500 VUs, 115663 complete and 0 interrupted iterations
+default ✓ [======================================] 000/500 VUs  14m0s
+ERRO[0843] thresholds on metrics 'http_req_duration' have been crossed

@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^node -e \"require\\('\\./aws-cleanup-cli\\.js'\\); console\\.log\\('aws-cleanup-cli loaded'\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

@@ -1,0 +1,95 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-1-read-heavy.js --out json=results/java25/scenario1-gc-pause/k6-out.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-1-read-heavy.js
+        output: json (results/java25/scenario1-gc-pause/k6-out.json)
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 500 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] ========================================      source=console
+INFO[0000] TEST START TIME                               source=console
+INFO[0000] ========================================      source=console
+INFO[0000] ISO Format: 2026-02-25T21:00:38.240Z          source=console
+INFO[0000] Epoch (ms): 1772053238240                     source=console
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0842] ========================================      source=console
+INFO[0842] TEST END TIME                                 source=console
+INFO[0842] ========================================      source=console
+INFO[0842] ISO Format: 2026-02-25T21:14:40.288Z          source=console
+INFO[0842] Epoch (ms): 1772054080288                     source=console
+INFO[0842] Running teardown - checking application health...  source=console
+INFO[0842] ========================================      source=console
+INFO[0842] TEST DURATION: 842.048 seconds (14.03 minutes)  source=console
+INFO[0842] ========================================      source=console
+INFO[0842]
+========== Read-Heavy Scenario ==========    source=console
+INFO[0842] Start time: 2026-02-25T21:00:38.240Z          source=console
+INFO[0842] End time: 2026-02-25T21:14:40.288Z            source=console
+INFO[0842] Duration: 842.048 seconds                     source=console
+INFO[0842] =======================================       source=console
+WARN[0842] Application health check failed after test: 503  source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✓ 'p(99)<1000' p(99)=59.33ms
+    ✓ 'p(95)<500' p(95)=50.93ms
+    ✓ 'p(50)<100' p(50)=44.37ms
+
+    http_req_failed
+    ✗ 'rate<0.05' rate=99.45%
+
+    http_reqs
+    ✓ 'count>0' count=128984
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 257966 306.321265/s
+    checks_succeeded...: 50.26% 129667 out of 257966
+    checks_failed......: 49.73% 128299 out of 257966
+
+    ✗ Health check status is 200
+      ↳  50% — ✓ 1 / ✗ 1
+    ✗ GET /customers?search status is 200
+      ↳  0% — ✓ 151 / ✗ 25708
+    ✗ GET /customers?search response time < 500ms
+      ↳  99% — ✓ 25845 / ✗ 14
+    ✗ GET /customers/{id} status is 200
+      ↳  0% — ✓ 404 / ✗ 77190
+    ✓ GET /customers/{id} response time < 500ms
+    ✗ POST /customers status is 201 or 200
+      ↳  0% — ✓ 143 / ✗ 25386
+    ✓ POST /customers response time < 500ms
+
+    HTTP
+    http_req_duration..............: avg=45.22ms min=33.11ms med=44.37ms max=2.54s p(90)=49.2ms   p(95)=50.93ms
+      { expected_response:true }...: avg=99.8ms  min=38.95ms med=49.78ms max=2.54s p(90)=210.14ms p(95)=359.77ms
+    http_req_failed................: 99.45% 128285 out of 128984
+    http_reqs......................: 128984 153.16182/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.53s   min=70.16ms med=1.53s   max=3.45s p(90)=2.33s    p(95)=2.46s
+    iterations.....................: 128982 153.159445/s
+    vus............................: 1      min=1                max=500
+    vus_max........................: 500    min=500              max=500
+
+    NETWORK
+    data_received..................: 152 MB 180 kB/s
+    data_sent......................: 22 MB  26 kB/s
+
+
+
+
+running (14m02.1s), 000/500 VUs, 128982 complete and 0 interrupted iterations
+default ✓ [======================================] 000/500 VUs  14m0s
+ERRO[0842] thresholds on metrics 'http_req_failed' have been crossed

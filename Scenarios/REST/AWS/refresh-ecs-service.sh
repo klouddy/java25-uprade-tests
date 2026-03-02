@@ -1,11 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Refresh ECS service by rebuilding, pushing, and redeploying a specified image.
+# Redeploy java-bench-service with a new image (APP_IMAGE).
+# Assumes the image has already been built and pushed.
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-ROOT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
-SPRING_APP_DIR="$ROOT_DIR/spring-boot-app"
 
 if [[ -f "$SCRIPT_DIR/aws-env-vars.sh" ]]; then
   # shellcheck disable=SC1091
@@ -15,252 +14,299 @@ fi
 export AWS_REGION=${AWS_REGION:-us-east-1}
 export ECS_CLUSTER_NAME=${ECS_CLUSTER_NAME:-java-bench-cluster}
 export ECS_SERVICE_NAME=${ECS_SERVICE_NAME:-java-bench-service}
-export ECS_TASK_EXEC_ROLE_NAME=${ECS_TASK_EXEC_ROLE_NAME:-java-bench-ecs-execution-role}
-export DB_INSTANCE_ID=${DB_INSTANCE_ID:-java-bench-db}
-export DB_NAME=${DB_NAME:-benchmarkdb}
-export DB_USER=${DB_USER:-benchuser}
-export DB_PASSWORD=${DB_PASSWORD:-BenchUserStrongPass123!}
-export DESIRED_COUNT=${DESIRED_COUNT:-2}
-export JAVA_TOOL_OPTIONS=${JAVA_TOOL_OPTIONS:--XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+HeapDumpOnOutOfMemoryError}
 
 if [[ -z "${APP_IMAGE:-}" ]]; then
-  read -r -p "Enter ECR image (e.g., 913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java25-rest-20260224-01): " APP_IMAGE
-fi
-
-if [[ -z "$APP_IMAGE" ]]; then
-  echo "Error: APP_IMAGE is required."
+  echo "Error: APP_IMAGE is required (ECR image URI)."
+  echo "Example: export APP_IMAGE=123456789.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java25-rest-20260225-01"
   exit 1
 fi
 
-TAG_PART="${APP_IMAGE#*:}"
-DOCKERFILE=""
-if [[ "$TAG_PART" == java17* ]]; then
-  DOCKERFILE="$SPRING_APP_DIR/Dockerfile.java17"
-elif [[ "$TAG_PART" == java21* ]]; then
-  DOCKERFILE="$SPRING_APP_DIR/Dockerfile.java21"
-elif [[ "$TAG_PART" == java25* ]]; then
-  DOCKERFILE="$SPRING_APP_DIR/Dockerfile.java25"
-else
-  read -r -p "Dockerfile not inferred from tag. Enter Dockerfile path: " DOCKERFILE
-fi
+echo "=========================================="
+echo "Redeploying ECS Service with New Image"
+echo "=========================================="
+echo "Cluster: $ECS_CLUSTER_NAME"
+echo "Service: $ECS_SERVICE_NAME"
+echo "Region: $AWS_REGION"
+echo "New Image: $APP_IMAGE"
+echo ""
 
-if [[ ! -f "$DOCKERFILE" ]]; then
-  echo "Error: Dockerfile not found: $DOCKERFILE"
-  exit 1
-fi
-
-if [[ -z "${ECS_SG_ID:-}" || -z "${TG_ARN:-}" || -z "${ALB_ARN:-}" ]]; then
-  echo "Error: Missing ECS/ALB values. Run setup first or ensure aws-env-vars.sh exists."
-  exit 1
-fi
-
-DB_ENDPOINT=$(aws rds describe-db-instances \
-  --db-instance-identifier "$DB_INSTANCE_ID" \
-  --region "$AWS_REGION" \
-  --query "DBInstances[0].Endpoint.Address" \
-  --output text)
-
-if [[ -z "$DB_ENDPOINT" || "$DB_ENDPOINT" == "None" ]]; then
-  echo "Error: Unable to resolve DB endpoint for $DB_INSTANCE_ID"
-  exit 1
-fi
-
-ECS_TASK_EXEC_ROLE_ARN=$(aws iam get-role \
-  --role-name "$ECS_TASK_EXEC_ROLE_NAME" \
-  --query "Role.Arn" \
-  --output text)
-
-if [[ -z "$ECS_TASK_EXEC_ROLE_ARN" || "$ECS_TASK_EXEC_ROLE_ARN" == "None" ]]; then
-  echo "Error: Unable to resolve task role ARN for $ECS_TASK_EXEC_ROLE_NAME"
-  exit 1
-fi
-
-ECR_REGISTRY="${APP_IMAGE%%/*}"
-
-echo "Using image: $APP_IMAGE"
-echo "Dockerfile: $DOCKERFILE"
-
-read -r -p "Proceed to rebuild/push and redeploy this image? (y/N): " CONFIRM
-if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
-  echo "Aborted."
-  exit 0
-fi
-
-echo "Logging into ECR..."
-aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
-
-echo "Rebuilding image..."
-cd "$SPRING_APP_DIR"
-docker build -f "$DOCKERFILE" -t "$APP_IMAGE" .
-
-echo "Pushing image..."
-docker push "$APP_IMAGE"
-
-SERVICE_EXISTS=$(aws ecs describe-services \
+echo "Step 1: Checking current service status..."
+SERVICE_STATUS=$(aws ecs describe-services \
   --cluster "$ECS_CLUSTER_NAME" \
   --services "$ECS_SERVICE_NAME" \
   --region "$AWS_REGION" \
   --query 'services[0].status' \
   --output text 2>/dev/null || echo "")
 
-if [[ "$SERVICE_EXISTS" != "INACTIVE" && -n "$SERVICE_EXISTS" && "$SERVICE_EXISTS" != "None" ]]; then
-  echo "Deleting existing service: $ECS_SERVICE_NAME"
+if [[ -z "$SERVICE_STATUS" || "$SERVICE_STATUS" == "None" || "$SERVICE_STATUS" == "INACTIVE" ]]; then
+  echo "Service not found or inactive. Will discover infrastructure from existing resources."
+  SERVICE_EXISTS=false
+else
+  echo "✓ Service is $SERVICE_STATUS"
+  SERVICE_EXISTS=true
+fi
+echo ""
+
+echo "Step 2: Fetching configuration..."
+
+if [[ "$SERVICE_EXISTS" == "true" ]]; then
+  echo "  Cloning from existing service..."
+  TASK_DEF_ARN=$(aws ecs describe-services \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --services "$ECS_SERVICE_NAME" \
+    --region "$AWS_REGION" \
+    --query 'services[0].taskDefinition' \
+    --output text)
+
+  export DESIRED_COUNT=$(aws ecs describe-services \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --services "$ECS_SERVICE_NAME" \
+    --region "$AWS_REGION" \
+    --query 'services[0].desiredCount' \
+    --output text)
+
+  export LAUNCH_TYPE=$(aws ecs describe-services \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --services "$ECS_SERVICE_NAME" \
+    --region "$AWS_REGION" \
+    --query 'services[0].launchType' \
+    --output text)
+
+  aws ecs describe-services \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --services "$ECS_SERVICE_NAME" \
+    --region "$AWS_REGION" \
+    --query 'services[0].networkConfiguration' \
+    --output json > /tmp/java-bench-network.json
+
+  aws ecs describe-services \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --services "$ECS_SERVICE_NAME" \
+    --region "$AWS_REGION" \
+    --query 'services[0].loadBalancers' \
+    --output json > /tmp/java-bench-loadbalancers.json
+
+  aws ecs describe-task-definition \
+    --task-definition "$TASK_DEF_ARN" \
+    --region "$AWS_REGION" \
+    --output json > /tmp/java-bench-task-def-source.json
+
+  echo "  ✓ Fetched task definition: $TASK_DEF_ARN"
+  echo "  ✓ Desired count: $DESIRED_COUNT, Launch type: $LAUNCH_TYPE"
+else
+  echo "  Discovering infrastructure..."
+
+  # Get VPC
+  VPC_ID=$(aws ec2 describe-vpcs \
+    --filters "Name=isDefault,Values=true" \
+    --region "$AWS_REGION" \
+    --query "Vpcs[0].VpcId" \
+    --output text)
+
+  if [[ -z "$VPC_ID" || "$VPC_ID" == "None" ]]; then
+    echo "Error: Could not find default VPC"
+    exit 1
+  fi
+
+  # Get subnets
+  SUBNET_IDS=$(aws ec2 describe-subnets \
+    --filters "Name=vpc-id,Values=$VPC_ID" \
+    --region "$AWS_REGION" \
+    --query "Subnets[].SubnetId" \
+    --output json)
+
+  # Get ECS security group
+  ECS_SG_ID=$(aws ec2 describe-security-groups \
+    --filters "Name=group-name,Values=java-bench-ecs-sg" "Name=vpc-id,Values=$VPC_ID" \
+    --region "$AWS_REGION" \
+    --query "SecurityGroups[0].GroupId" \
+    --output text)
+
+  if [[ -z "$ECS_SG_ID" || "$ECS_SG_ID" == "None" ]]; then
+    echo "Error: Could not find security group 'java-bench-ecs-sg'"
+    exit 1
+  fi
+
+  # Get target group ARN
+  TG_ARN=$(aws elbv2 describe-target-groups \
+    --names java-bench-tg \
+    --region "$AWS_REGION" \
+    --query "TargetGroups[0].TargetGroupArn" \
+    --output text 2>/dev/null || echo "")
+
+  if [[ -z "$TG_ARN" || "$TG_ARN" == "None" ]]; then
+    echo "Error: Could not find target group 'java-bench-tg'"
+    exit 1
+  fi
+
+  # Build network configuration
+  cat > /tmp/java-bench-network.json <<EOF
+{
+  "awsvpcConfiguration": {
+    "subnets": $SUBNET_IDS,
+    "securityGroups": ["$ECS_SG_ID"],
+    "assignPublicIp": "ENABLED"
+  }
+}
+EOF
+
+  # Build load balancer configuration
+  cat > /tmp/java-bench-loadbalancers.json <<EOF
+[
+  {
+    "targetGroupArn": "$TG_ARN",
+    "containerName": "java-bench-app",
+    "containerPort": 8080
+  }
+]
+EOF
+
+  # Find most recent task definition or use family name
+  TASK_DEF_ARN=$(aws ecs describe-task-definition \
+    --task-definition java-bench-task \
+    --region "$AWS_REGION" \
+    --query "taskDefinition.taskDefinitionArn" \
+    --output text 2>/dev/null || echo "")
+
+  if [[ -z "$TASK_DEF_ARN" || "$TASK_DEF_ARN" == "None" ]]; then
+    echo "Error: Could not find task definition 'java-bench-task'"
+    exit 1
+  fi
+
+  aws ecs describe-task-definition \
+    --task-definition "$TASK_DEF_ARN" \
+    --region "$AWS_REGION" \
+    --output json > /tmp/java-bench-task-def-source.json
+
+  export DESIRED_COUNT=2
+  export LAUNCH_TYPE="FARGATE"
+
+  echo "  ✓ VPC: $VPC_ID"
+  echo "  ✓ Security group: $ECS_SG_ID"
+  echo "  ✓ Target group: $TG_ARN"
+  echo "  ✓ Task definition: $TASK_DEF_ARN"
+  echo "  ✓ Desired count: $DESIRED_COUNT, Launch type: $LAUNCH_TYPE"
+fi
+echo ""
+
+python3 - <<'PY'
+import json
+import os
+
+app_img = os.environ['APP_IMAGE']
+
+with open('/tmp/java-bench-task-def-source.json', 'r') as f:
+  src = json.load(f)['taskDefinition']
+
+for container in src.get('containerDefinitions', []):
+  container['image'] = app_img
+
+allowed_keys = [
+  'family',
+  'taskRoleArn',
+  'executionRoleArn',
+  'networkMode',
+  'containerDefinitions',
+  'volumes',
+  'placementConstraints',
+  'requiresCompatibilities',
+  'cpu',
+  'memory',
+  'ipcMode',
+  'pidMode',
+  'proxyConfiguration',
+  'inferenceAccelerators',
+  'ephemeralStorage',
+  'runtimePlatform'
+]
+
+out = {k: src[k] for k in allowed_keys if k in src}
+
+with open('/tmp/java-bench-task-def.json', 'w') as f:
+  json.dump(out, f, indent=2)
+PY
+
+echo "Step 3: Registering new task definition with updated image..."
+export NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+  --cli-input-json file:///tmp/java-bench-task-def.json \
+  --region "$AWS_REGION" \
+  --query 'taskDefinition.taskDefinitionArn' \
+  --output text)
+
+echo "✓ Registered: $NEW_TASK_DEF_ARN"
+echo ""
+
+if [[ "$SERVICE_EXISTS" == "true" ]]; then
+  echo "Step 4: Deleting existing service..."
   aws ecs delete-service \
     --cluster "$ECS_CLUSTER_NAME" \
     --service "$ECS_SERVICE_NAME" \
     --force \
     --region "$AWS_REGION"
 
+  echo "✓ Service deleted, waiting for service to become inactive..."
   aws ecs wait services-inactive \
     --cluster "$ECS_CLUSTER_NAME" \
     --services "$ECS_SERVICE_NAME" \
     --region "$AWS_REGION"
+
+  echo "✓ Service is now inactive"
+  echo ""
+  STEP_NUM=5
+else
+  echo "Step 4: Skipping service deletion (no existing service)"
+  echo ""
+  STEP_NUM=4
 fi
 
-echo "Registering new task definition..."
-cat > /tmp/task-def.json <<EOF
-{
-  "family": "java-bench-task",
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "512",
-  "memory": "2048",
-  "executionRoleArn": "$ECS_TASK_EXEC_ROLE_ARN",
-  "taskRoleArn": "$ECS_TASK_EXEC_ROLE_ARN",
-  "containerDefinitions": [
-    {
-      "name": "java-bench-app",
-      "image": "$APP_IMAGE",
-      "portMappings": [
-        {
-          "containerPort": 8080,
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [
-        {
-          "name": "SPRING_DATASOURCE_URL",
-          "value": "jdbc:postgresql://$DB_ENDPOINT:5432/$DB_NAME"
-        },
-        {
-          "name": "SPRING_DATASOURCE_USERNAME",
-          "value": "$DB_USER"
-        },
-        {
-          "name": "SPRING_DATASOURCE_PASSWORD",
-          "value": "$DB_PASSWORD"
-        },
-        {
-          "name": "SPRING_PROFILES_ACTIVE",
-          "value": "ecs"
-        },
-        {
-          "name": "JAVA_TOOL_OPTIONS",
-          "value": "$JAVA_TOOL_OPTIONS"
-        },
-        {
-          "name": "APP_IMAGE",
-          "value": "$APP_IMAGE"
-        },
-        {
-          "name": "METRICS_CLOUDWATCH_ENABLED",
-          "value": "true"
-        },
-        {
-          "name": "METRICS_CLOUDWATCH_NAMESPACE",
-          "value": "JavaBenchmark"
-        },
-        {
-          "name": "METRICS_CLOUDWATCH_STEP",
-          "value": "1m"
-        },
-        {
-          "name": "AWS_REGION",
-          "value": "$AWS_REGION"
-        }
-      ],
-      "healthCheck": {
-        "command": [
-          "CMD-SHELL",
-          "curl -f http://localhost:8080/actuator/health || exit 1"
-        ],
-        "interval": 30,
-        "timeout": 10,
-        "retries": 3,
-        "startPeriod": 120
-      },
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/java-bench-app",
-          "awslogs-region": "$AWS_REGION",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-create-group": "true"
-        }
-      },
-      "essential": true
-    }
-  ]
+python3 - <<'PY'
+import json
+import os
+
+cluster = os.environ['ECS_CLUSTER_NAME']
+service = os.environ['ECS_SERVICE_NAME']
+launch_type = os.environ.get('LAUNCH_TYPE') or 'FARGATE'
+
+desired = int(os.environ.get('DESIRED_COUNT') or 2)
+new_task_def = os.environ['NEW_TASK_DEF_ARN']
+
+with open('/tmp/java-bench-network.json', 'r') as f:
+  network = json.load(f)
+with open('/tmp/java-bench-loadbalancers.json', 'r') as f:
+  load_balancers = json.load(f)
+
+payload = {
+  'cluster': cluster,
+  'serviceName': service,
+  'taskDefinition': new_task_def,
+  'desiredCount': desired,
+  'launchType': launch_type,
+  'networkConfiguration': network,
+  'loadBalancers': load_balancers
 }
-EOF
 
-aws ecs register-task-definition \
-  --cli-input-json file:///tmp/task-def.json \
-  --region "$AWS_REGION"
+with open('/tmp/java-bench-create-service.json', 'w') as f:
+  json.dump(payload, f, indent=2)
+PY
 
-# Resolve subnet IDs (reuse VPC subnets for Fargate)
-VPC_ID=${VPC_ID:-}
-if [[ -z "$VPC_ID" ]]; then
-  VPC_ID=$(aws ec2 describe-vpcs \
-    --filters "Name=isDefault,Values=true" \
-    --region "$AWS_REGION" \
-    --query "Vpcs[0].VpcId" \
-    --output text)
-fi
-
-SUBNET_IDS=$(aws ec2 describe-subnets \
-  --filters "Name=vpc-id,Values=$VPC_ID" \
-  --region "$AWS_REGION" \
-  --query "Subnets[*].SubnetId" \
-  --output text)
-
-SUBNET_1=$(echo "$SUBNET_IDS" | awk '{print $1}')
-SUBNET_2=$(echo "$SUBNET_IDS" | awk '{print $2}')
-SUBNET_3=$(echo "$SUBNET_IDS" | awk '{print $3}')
-
-cat > /tmp/create-service.json <<EOF
-{
-  "cluster": "$ECS_CLUSTER_NAME",
-  "serviceName": "$ECS_SERVICE_NAME",
-  "taskDefinition": "java-bench-task",
-  "desiredCount": $DESIRED_COUNT,
-  "launchType": "FARGATE",
-  "networkConfiguration": {
-    "awsvpcConfiguration": {
-      "subnets": ["$SUBNET_1", "$SUBNET_2"$([ -n "$SUBNET_3" ] && echo ", \"$SUBNET_3\"")],
-      "securityGroups": ["$ECS_SG_ID"],
-      "assignPublicIp": "ENABLED"
-    }
-  },
-  "loadBalancers": [
-    {
-      "targetGroupArn": "$TG_ARN",
-      "containerName": "java-bench-app",
-      "containerPort": 8080
-    }
-  ]
-}
-EOF
-
-echo "Creating ECS service..."
+echo "Step $STEP_NUM: Creating new ECS service with updated task definition..."
 aws ecs create-service \
-  --cli-input-json file:///tmp/create-service.json \
-  --region "$AWS_REGION"
+  --cli-input-json file:///tmp/java-bench-create-service.json \
+  --region "$AWS_REGION" > /dev/null
 
-echo "Waiting for service to stabilize..."
+echo "✓ Service created"
+echo ""
+
+STEP_NUM=$((STEP_NUM + 1))
+echo "Step $STEP_NUM: Waiting for service to stabilize (this may take 2-3 minutes)..."
 aws ecs wait services-stable \
   --cluster "$ECS_CLUSTER_NAME" \
   --services "$ECS_SERVICE_NAME" \
   --region "$AWS_REGION"
 
-echo "Refresh complete."
+echo ""
+echo "========================================"
+echo "✓ Service redeployment complete!"
+echo "========================================"
+
+echo "Refresh complete. Service is running image: $APP_IMAGE"

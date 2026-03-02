@@ -1,0 +1,46 @@
+version: 0.2
+
+# AWS CodeBuild specification for GraalVM native image builds
+# Usage: aws codebuild start-build --project-name graalvm-benchmark-build
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | podman login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - IMAGE_REPO_NAME="benchmark-app"
+      - IMAGE_TAG="rest-graalvm-$(date +%Y-%m-%d-%H-%M-%S)"
+      - IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - echo "Building GraalVM native image: $IMAGE_URI"
+
+  build:
+    commands:
+      - echo "Building Docker image on `date`"
+      - cd Scenarios/REST/spring-boot-app
+      # Podman build with GraalVM Dockerfile
+      # CodeBuild instances have enough memory (4GB+) for compilation
+      - podman build -f Dockerfile.graalvm -t $IMAGE_URI .
+      - echo "Build completed on `date`"
+
+  post_build:
+    commands:
+      - echo "Pushing image to ECR repository..."
+      - podman push $IMAGE_URI
+      - echo "Writing image definitions file..."
+      - printf '[{"name":"app","imageUri":"%s"}]' $IMAGE_URI > imagedefinitions.json
+      - cat imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
+  name: BuildArtifact
+
+cache:
+  paths:
+    - '/root/.m2/**/*'
+    - '/root/.gradle/**/*'
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-1"
+    AWS_ACCOUNT_ID: "913846010507"

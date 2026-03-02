@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: benchmark-postgres-graalvm
+    environment:
+      POSTGRES_DB: benchmark
+      POSTGRES_USER: benchmarkuser
+      POSTGRES_PASSWORD: benchmarkpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_graalvm:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U benchmarkuser -d benchmark"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - benchmark-network
+
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.graalvm
+    container_name: spring-boot-graalvm
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring profiles
+      SPRING_PROFILES_ACTIVE: local
+      
+      # Database connection
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/benchmark
+      SPRING_DATASOURCE_USERNAME: benchmarkuser
+      SPRING_DATASOURCE_PASSWORD: benchmarkpass
+      
+      # Clear DB on startup for testing
+      APP_CLEAR_DB_ON_START: "true"
+      
+      # Flyway
+      SPRING_FLYWAY_ENABLED: "true"
+      
+      # Actuator
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics,prometheus
+      MANAGEMENT_METRICS_EXPORT_CLOUDWATCH_ENABLED: "false"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - benchmark-network
+
+volumes:
+  postgres_data_graalvm:
+    driver: local
+
+networks:
+  benchmark-network:
+    driver: bridge
