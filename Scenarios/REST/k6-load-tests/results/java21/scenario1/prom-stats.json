@@ -1,0 +1,1889 @@
+{
+  "metadata": {
+    "promUrl": "http://java-bench-alb-1936020596.us-east-1.elb.amazonaws.com/prometheus",
+    "startTime": "2026-02-25T17:31:38.245Z",
+    "endTime": "2026-02-25T17:45:40.030Z",
+    "step": "60s",
+    "generatedAt": "2026-02-25T17:56:01.038Z"
+  },
+  "metrics": {
+    "heap-used-bytes": [
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Eden Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "88080384"
+          ],
+          [
+            1772040878.245,
+            "90177536"
+          ],
+          [
+            1772040938.245,
+            "98566144"
+          ],
+          [
+            1772041058.245,
+            "79691776"
+          ],
+          [
+            1772041178.245,
+            "27262976"
+          ],
+          [
+            1772041238.245,
+            "41943040"
+          ],
+          [
+            1772041298.245,
+            "2097152"
+          ],
+          [
+            1772041418.245,
+            "77594624"
+          ],
+          [
+            1772041478.245,
+            "104857600"
+          ],
+          [
+            1772041538.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Eden Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "2097152"
+          ],
+          [
+            1772040758.245,
+            "50331648"
+          ],
+          [
+            1772040998.245,
+            "25165824"
+          ],
+          [
+            1772041118.245,
+            "50331648"
+          ],
+          [
+            1772041358.245,
+            "2097152"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Old Gen",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "27859896"
+          ],
+          [
+            1772040878.245,
+            "31974096"
+          ],
+          [
+            1772040938.245,
+            "34157808"
+          ],
+          [
+            1772041058.245,
+            "37698576"
+          ],
+          [
+            1772041178.245,
+            "41068376"
+          ],
+          [
+            1772041238.245,
+            "41294512"
+          ],
+          [
+            1772041298.245,
+            "42560920"
+          ],
+          [
+            1772041418.245,
+            "48147536"
+          ],
+          [
+            1772041478.245,
+            "48314992"
+          ],
+          [
+            1772041538.245,
+            "48368656"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Old Gen",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "28572968"
+          ],
+          [
+            1772040758.245,
+            "28572968"
+          ],
+          [
+            1772040998.245,
+            "37327864"
+          ],
+          [
+            1772041118.245,
+            "40049752"
+          ],
+          [
+            1772041358.245,
+            "43703144"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Survivor Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "11534336"
+          ],
+          [
+            1772040878.245,
+            "9331096"
+          ],
+          [
+            1772040938.245,
+            "6963176"
+          ],
+          [
+            1772041058.245,
+            "3396704"
+          ],
+          [
+            1772041178.245,
+            "509960"
+          ],
+          [
+            1772041238.245,
+            "1534720"
+          ],
+          [
+            1772041298.245,
+            "2040192"
+          ],
+          [
+            1772041418.245,
+            "4615424"
+          ],
+          [
+            1772041478.245,
+            "1724800"
+          ],
+          [
+            1772041538.245,
+            "336048"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Survivor Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "11534336"
+          ],
+          [
+            1772040758.245,
+            "11534336"
+          ],
+          [
+            1772040998.245,
+            "3113264"
+          ],
+          [
+            1772041118.245,
+            "927600"
+          ],
+          [
+            1772041358.245,
+            "1628464"
+          ]
+        ]
+      }
+    ],
+    "non-heap-used-bytes": [
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "CodeHeap 'non-nmethods'",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "2019456"
+          ],
+          [
+            1772040878.245,
+            "2019456"
+          ],
+          [
+            1772040938.245,
+            "2019456"
+          ],
+          [
+            1772041058.245,
+            "2025600"
+          ],
+          [
+            1772041178.245,
+            "2025600"
+          ],
+          [
+            1772041238.245,
+            "2025600"
+          ],
+          [
+            1772041298.245,
+            "2025600"
+          ],
+          [
+            1772041418.245,
+            "2025600"
+          ],
+          [
+            1772041478.245,
+            "2025600"
+          ],
+          [
+            1772041538.245,
+            "2025600"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "CodeHeap 'non-nmethods'",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "1997440"
+          ],
+          [
+            1772040758.245,
+            "2014592"
+          ],
+          [
+            1772040998.245,
+            "2014592"
+          ],
+          [
+            1772041118.245,
+            "2014592"
+          ],
+          [
+            1772041358.245,
+            "2014592"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "CodeHeap 'non-profiled nmethods'",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "7415552"
+          ],
+          [
+            1772040878.245,
+            "9430784"
+          ],
+          [
+            1772040938.245,
+            "11131008"
+          ],
+          [
+            1772041058.245,
+            "14921088"
+          ],
+          [
+            1772041178.245,
+            "15978752"
+          ],
+          [
+            1772041238.245,
+            "16997120"
+          ],
+          [
+            1772041298.245,
+            "17885056"
+          ],
+          [
+            1772041418.245,
+            "18530048"
+          ],
+          [
+            1772041478.245,
+            "18600704"
+          ],
+          [
+            1772041538.245,
+            "18608000"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "CodeHeap 'non-profiled nmethods'",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "4819456"
+          ],
+          [
+            1772040758.245,
+            "5754624"
+          ],
+          [
+            1772040998.245,
+            "13251968"
+          ],
+          [
+            1772041118.245,
+            "14785792"
+          ],
+          [
+            1772041358.245,
+            "17414272"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "CodeHeap 'profiled nmethods'",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "26159232"
+          ],
+          [
+            1772040878.245,
+            "28771200"
+          ],
+          [
+            1772040938.245,
+            "30772480"
+          ],
+          [
+            1772041058.245,
+            "31441024"
+          ],
+          [
+            1772041178.245,
+            "31931776"
+          ],
+          [
+            1772041238.245,
+            "32202624"
+          ],
+          [
+            1772041298.245,
+            "32431872"
+          ],
+          [
+            1772041418.245,
+            "32881536"
+          ],
+          [
+            1772041478.245,
+            "32936960"
+          ],
+          [
+            1772041538.245,
+            "33014912"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "CodeHeap 'profiled nmethods'",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "16016896"
+          ],
+          [
+            1772040758.245,
+            "19315456"
+          ],
+          [
+            1772040998.245,
+            "30506624"
+          ],
+          [
+            1772041118.245,
+            "30910464"
+          ],
+          [
+            1772041358.245,
+            "32015744"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "Compressed Class Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "12895392"
+          ],
+          [
+            1772040878.245,
+            "12897952"
+          ],
+          [
+            1772040938.245,
+            "12901520"
+          ],
+          [
+            1772041058.245,
+            "12905488"
+          ],
+          [
+            1772041178.245,
+            "12906008"
+          ],
+          [
+            1772041238.245,
+            "12908360"
+          ],
+          [
+            1772041298.245,
+            "12908360"
+          ],
+          [
+            1772041418.245,
+            "12909408"
+          ],
+          [
+            1772041478.245,
+            "12909408"
+          ],
+          [
+            1772041538.245,
+            "12909408"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "Compressed Class Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "12427816"
+          ],
+          [
+            1772040758.245,
+            "12841696"
+          ],
+          [
+            1772040998.245,
+            "12870136"
+          ],
+          [
+            1772041118.245,
+            "12870648"
+          ],
+          [
+            1772041358.245,
+            "12875056"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "Metaspace",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "95372992"
+          ],
+          [
+            1772040878.245,
+            "95980776"
+          ],
+          [
+            1772040938.245,
+            "96729600"
+          ],
+          [
+            1772041058.245,
+            "96845272"
+          ],
+          [
+            1772041178.245,
+            "96922768"
+          ],
+          [
+            1772041238.245,
+            "96956568"
+          ],
+          [
+            1772041298.245,
+            "96978376"
+          ],
+          [
+            1772041418.245,
+            "97022064"
+          ],
+          [
+            1772041478.245,
+            "97025784"
+          ],
+          [
+            1772041538.245,
+            "97027440"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_used_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "nonheap",
+          "environment": "ecs",
+          "id": "Metaspace",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "88966120"
+          ],
+          [
+            1772040758.245,
+            "92744280"
+          ],
+          [
+            1772040998.245,
+            "96449072"
+          ],
+          [
+            1772041118.245,
+            "96503272"
+          ],
+          [
+            1772041358.245,
+            "96652904"
+          ]
+        ]
+      }
+    ],
+    "gc-pause-rate-5m": [
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "CodeCache GC Threshold",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772041058.245,
+            "0"
+          ],
+          [
+            1772041118.245,
+            "0"
+          ],
+          [
+            1772041178.245,
+            "0"
+          ],
+          [
+            1772041238.245,
+            "0"
+          ],
+          [
+            1772041298.245,
+            "0"
+          ],
+          [
+            1772041358.245,
+            "0"
+          ],
+          [
+            1772041418.245,
+            "0"
+          ],
+          [
+            1772041478.245,
+            "0"
+          ],
+          [
+            1772041538.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "CodeCache GC Threshold",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040998.245,
+            "0"
+          ],
+          [
+            1772041058.245,
+            "0"
+          ],
+          [
+            1772041118.245,
+            "0"
+          ],
+          [
+            1772041178.245,
+            "0"
+          ],
+          [
+            1772041238.245,
+            "0"
+          ],
+          [
+            1772041298.245,
+            "0"
+          ],
+          [
+            1772041358.245,
+            "0"
+          ],
+          [
+            1772041418.245,
+            "0"
+          ],
+          [
+            1772041478.245,
+            "0"
+          ],
+          [
+            1772041538.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "G1 Evacuation Pause",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040758.245,
+            "0"
+          ],
+          [
+            1772040818.245,
+            "0"
+          ],
+          [
+            1772040878.245,
+            "0.00006366514412619916"
+          ],
+          [
+            1772040938.245,
+            "0.00015651325482326906"
+          ],
+          [
+            1772040998.245,
+            "0.000203547037037037"
+          ],
+          [
+            1772041058.245,
+            "0.0005222280247558305"
+          ],
+          [
+            1772041118.245,
+            "0.00051"
+          ],
+          [
+            1772041178.245,
+            "0.0006778800000000001"
+          ],
+          [
+            1772041238.245,
+            "0.0009157830471365114"
+          ],
+          [
+            1772041298.245,
+            "0.001687719298245614"
+          ],
+          [
+            1772041358.245,
+            "0.0029518518518518518"
+          ],
+          [
+            1772041418.245,
+            "0.004147368421052631"
+          ],
+          [
+            1772041478.245,
+            "0.005292592592592593"
+          ],
+          [
+            1772041538.245,
+            "0.004807017543859649"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "G1 Evacuation Pause",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040758.245,
+            "0"
+          ],
+          [
+            1772040818.245,
+            "0.00007778444444444445"
+          ],
+          [
+            1772040878.245,
+            "0.00006800000000000003"
+          ],
+          [
+            1772040938.245,
+            "0.00017142857142857143"
+          ],
+          [
+            1772040998.245,
+            "0.00044048834259259264"
+          ],
+          [
+            1772041058.245,
+            "0.000588888888888889"
+          ],
+          [
+            1772041118.245,
+            "0.0007298245614035088"
+          ],
+          [
+            1772041178.245,
+            "0.0007001482031692135"
+          ],
+          [
+            1772041238.245,
+            "0.001556862745098039"
+          ],
+          [
+            1772041298.245,
+            "0.002570905238095238"
+          ],
+          [
+            1772041358.245,
+            "0.003937037037037037"
+          ],
+          [
+            1772041418.245,
+            "0.0037640000000000004"
+          ],
+          [
+            1772041478.245,
+            "0.007314814814814816"
+          ],
+          [
+            1772041538.245,
+            "0.007433333333333333"
+          ]
+        ]
+      }
+    ],
+    "gc-pause-max": [
+      {
+        "metric": {
+          "__name__": "jvm_gc_pause_seconds_max",
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "CodeCache GC Threshold",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772041058.245,
+            "0.092"
+          ],
+          [
+            1772041178.245,
+            "0"
+          ],
+          [
+            1772041238.245,
+            "0"
+          ],
+          [
+            1772041298.245,
+            "0"
+          ],
+          [
+            1772041418.245,
+            "0"
+          ],
+          [
+            1772041478.245,
+            "0"
+          ],
+          [
+            1772041538.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_gc_pause_seconds_max",
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "CodeCache GC Threshold",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040998.245,
+            "0.016"
+          ],
+          [
+            1772041118.245,
+            "0.016"
+          ],
+          [
+            1772041358.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_gc_pause_seconds_max",
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "G1 Evacuation Pause",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "0.095"
+          ],
+          [
+            1772040878.245,
+            "0.095"
+          ],
+          [
+            1772040938.245,
+            "0.017"
+          ],
+          [
+            1772041058.245,
+            "0.014"
+          ],
+          [
+            1772041178.245,
+            "0.013"
+          ],
+          [
+            1772041238.245,
+            "0.008"
+          ],
+          [
+            1772041298.245,
+            "0.067"
+          ],
+          [
+            1772041418.245,
+            "0.094"
+          ],
+          [
+            1772041478.245,
+            "0.094"
+          ],
+          [
+            1772041538.245,
+            "0.09"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_gc_pause_seconds_max",
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "G1 Evacuation Pause",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "0.102"
+          ],
+          [
+            1772040758.245,
+            "0.102"
+          ],
+          [
+            1772040998.245,
+            "0.026"
+          ],
+          [
+            1772041118.245,
+            "0.026"
+          ],
+          [
+            1772041358.245,
+            "0.092"
+          ]
+        ]
+      }
+    ],
+    "live-threads": [],
+    "process-cpu-usage": [
+      {
+        "metric": {
+          "__name__": "process_cpu_usage",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "environment": "ecs",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "0.06847240915208613"
+          ],
+          [
+            1772040878.245,
+            "0.0643747893495113"
+          ],
+          [
+            1772040938.245,
+            "0.05627118644067797"
+          ],
+          [
+            1772041058.245,
+            "0.07324465398215188"
+          ],
+          [
+            1772041178.245,
+            "0.07997334221926025"
+          ],
+          [
+            1772041238.245,
+            "0.15396471998629901"
+          ],
+          [
+            1772041298.245,
+            "0.1383669285958319"
+          ],
+          [
+            1772041418.245,
+            "0.17048517520215634"
+          ],
+          [
+            1772041478.245,
+            "0.14902363823227133"
+          ],
+          [
+            1772041538.245,
+            "0.026936026936026935"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "process_cpu_usage",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "environment": "ecs",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "0.0031900604432505038"
+          ],
+          [
+            1772040758.245,
+            "0.027782440825919085"
+          ],
+          [
+            1772040998.245,
+            "0.09541469993256912"
+          ],
+          [
+            1772041118.245,
+            "0.07455540355677154"
+          ],
+          [
+            1772041358.245,
+            "0.1821173889193637"
+          ]
+        ]
+      }
+    ],
+    "system-cpu-usage": [
+      {
+        "metric": {
+          "__name__": "system_cpu_usage",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "environment": "ecs",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "0.07537012113055182"
+          ],
+          [
+            1772040878.245,
+            "0.06639703404111898"
+          ],
+          [
+            1772040938.245,
+            "0.05457627118644068"
+          ],
+          [
+            1772041058.245,
+            "0.08232323232323233"
+          ],
+          [
+            1772041178.245,
+            "0.09896701099633456"
+          ],
+          [
+            1772041238.245,
+            "0.16221308667351833"
+          ],
+          [
+            1772041298.245,
+            "0.1376993166287016"
+          ],
+          [
+            1772041418.245,
+            "0.18261455525606468"
+          ],
+          [
+            1772041478.245,
+            "0.15393399566061436"
+          ],
+          [
+            1772041538.245,
+            "0.03265993265993266"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "system_cpu_usage",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "environment": "ecs",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "0.012090680100755667"
+          ],
+          [
+            1772040758.245,
+            "0.03449433487201007"
+          ],
+          [
+            1772040998.245,
+            "0.10182063385030345"
+          ],
+          [
+            1772041118.245,
+            "0.07113543091655267"
+          ],
+          [
+            1772041358.245,
+            "0.17096361309197294"
+          ]
+        ]
+      }
+    ],
+    "heap-committed-bytes": [
+      {
+        "metric": {
+          "__name__": "jvm_memory_committed_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Eden Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "104857600"
+          ],
+          [
+            1772040878.245,
+            "106954752"
+          ],
+          [
+            1772040938.245,
+            "109051904"
+          ],
+          [
+            1772041058.245,
+            "90177536"
+          ],
+          [
+            1772041178.245,
+            "92274688"
+          ],
+          [
+            1772041238.245,
+            "92274688"
+          ],
+          [
+            1772041298.245,
+            "92274688"
+          ],
+          [
+            1772041418.245,
+            "136314880"
+          ],
+          [
+            1772041478.245,
+            "140509184"
+          ],
+          [
+            1772041538.245,
+            "140509184"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_committed_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Eden Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "83886080"
+          ],
+          [
+            1772040758.245,
+            "83886080"
+          ],
+          [
+            1772040998.245,
+            "90177536"
+          ],
+          [
+            1772041118.245,
+            "92274688"
+          ],
+          [
+            1772041358.245,
+            "92274688"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_committed_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Old Gen",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "69206016"
+          ],
+          [
+            1772040878.245,
+            "69206016"
+          ],
+          [
+            1772040938.245,
+            "69206016"
+          ],
+          [
+            1772041058.245,
+            "52428800"
+          ],
+          [
+            1772041178.245,
+            "52428800"
+          ],
+          [
+            1772041238.245,
+            "52428800"
+          ],
+          [
+            1772041298.245,
+            "52428800"
+          ],
+          [
+            1772041418.245,
+            "81788928"
+          ],
+          [
+            1772041478.245,
+            "81788928"
+          ],
+          [
+            1772041538.245,
+            "81788928"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_committed_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Old Gen",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "56623104"
+          ],
+          [
+            1772040758.245,
+            "56623104"
+          ],
+          [
+            1772040998.245,
+            "52428800"
+          ],
+          [
+            1772041118.245,
+            "52428800"
+          ],
+          [
+            1772041358.245,
+            "52428800"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_committed_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Survivor Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040818.245,
+            "12582912"
+          ],
+          [
+            1772040878.245,
+            "10485760"
+          ],
+          [
+            1772040938.245,
+            "8388608"
+          ],
+          [
+            1772041058.245,
+            "4194304"
+          ],
+          [
+            1772041178.245,
+            "2097152"
+          ],
+          [
+            1772041238.245,
+            "2097152"
+          ],
+          [
+            1772041298.245,
+            "2097152"
+          ],
+          [
+            1772041418.245,
+            "6291456"
+          ],
+          [
+            1772041478.245,
+            "2097152"
+          ],
+          [
+            1772041538.245,
+            "2097152"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "jvm_memory_committed_bytes",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "area": "heap",
+          "environment": "ecs",
+          "id": "G1 Survivor Space",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040698.245,
+            "12582912"
+          ],
+          [
+            1772040758.245,
+            "12582912"
+          ],
+          [
+            1772040998.245,
+            "4194304"
+          ],
+          [
+            1772041118.245,
+            "2097152"
+          ],
+          [
+            1772041358.245,
+            "2097152"
+          ]
+        ]
+      }
+    ],
+    "classes-loaded": [],
+    "gc-count-rate-5m": [
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "CodeCache GC Threshold",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772041058.245,
+            "0"
+          ],
+          [
+            1772041118.245,
+            "0"
+          ],
+          [
+            1772041178.245,
+            "0"
+          ],
+          [
+            1772041238.245,
+            "0"
+          ],
+          [
+            1772041298.245,
+            "0"
+          ],
+          [
+            1772041358.245,
+            "0"
+          ],
+          [
+            1772041418.245,
+            "0"
+          ],
+          [
+            1772041478.245,
+            "0"
+          ],
+          [
+            1772041538.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "CodeCache GC Threshold",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040998.245,
+            "0"
+          ],
+          [
+            1772041058.245,
+            "0"
+          ],
+          [
+            1772041118.245,
+            "0"
+          ],
+          [
+            1772041178.245,
+            "0"
+          ],
+          [
+            1772041238.245,
+            "0"
+          ],
+          [
+            1772041298.245,
+            "0"
+          ],
+          [
+            1772041358.245,
+            "0"
+          ],
+          [
+            1772041418.245,
+            "0"
+          ],
+          [
+            1772041478.245,
+            "0"
+          ],
+          [
+            1772041538.245,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "G1 Evacuation Pause",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-73-10.ec2.internal"
+        },
+        "values": [
+          [
+            1772040758.245,
+            "0"
+          ],
+          [
+            1772040818.245,
+            "0"
+          ],
+          [
+            1772040878.245,
+            "0.0037450084780117146"
+          ],
+          [
+            1772040938.245,
+            "0.010919529406274584"
+          ],
+          [
+            1772040998.245,
+            "0.014539074074074074"
+          ],
+          [
+            1772041058.245,
+            "0.05114593865857769"
+          ],
+          [
+            1772041118.245,
+            "0.06"
+          ],
+          [
+            1772041178.245,
+            "0.14705333333333334"
+          ],
+          [
+            1772041238.245,
+            "0.2280685749573687"
+          ],
+          [
+            1772041298.245,
+            "0.343859649122807"
+          ],
+          [
+            1772041358.245,
+            "0.46296296296296297"
+          ],
+          [
+            1772041418.245,
+            "0.5649122807017544"
+          ],
+          [
+            1772041478.245,
+            "0.6444444444444445"
+          ],
+          [
+            1772041538.245,
+            "0.5964912280701754"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "action": "end of minor GC",
+          "app_image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:java21-rest-20260225-01",
+          "application": "spring-boot-benchmark",
+          "cause": "G1 Evacuation Pause",
+          "environment": "ecs",
+          "gc": "G1 Young Generation",
+          "instance": "java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+          "java_version": "21.0.10",
+          "job": "java-bench-service",
+          "pod_name": "ip-172-31-95-79.ec2.internal"
+        },
+        "values": [
+          [
+            1772040758.245,
+            "0"
+          ],
+          [
+            1772040818.245,
+            "0.004575555555555556"
+          ],
+          [
+            1772040878.245,
+            "0.004000000000000001"
+          ],
+          [
+            1772040938.245,
+            "0.011428571428571429"
+          ],
+          [
+            1772040998.245,
+            "0.028884481481481483"
+          ],
+          [
+            1772041058.245,
+            "0.04814814814814815"
+          ],
+          [
+            1772041118.245,
+            "0.09473684210526315"
+          ],
+          [
+            1772041178.245,
+            "0.09530813236858403"
+          ],
+          [
+            1772041238.245,
+            "0.23529411764705882"
+          ],
+          [
+            1772041298.245,
+            "0.3368505357142857"
+          ],
+          [
+            1772041358.245,
+            "0.5185185185185185"
+          ],
+          [
+            1772041418.245,
+            "0.436"
+          ],
+          [
+            1772041478.245,
+            "0.7555555555555555"
+          ],
+          [
+            1772041538.245,
+            "0.7875"
+          ]
+        ]
+      }
+    ]
+  }
+}

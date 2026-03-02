@@ -1,0 +1,28 @@
+{
+  "inputDir": "../Scenarios/REST/k6-load-tests/results/java21/scenario1",
+  "outputDir": "../Scenarios/REST/k6-load-tests/results/java21/scenario1",
+  "files": {
+    "k6Summary": "k6-summary.txt"
+  },
+  "run": {
+    "javaVersion": "21",
+    "scenario": "1",
+    "startTime": "2026-02-25T17:31:38.245Z",
+    "endTime": "2026-02-25T17:45:40.030Z",
+    "albUrl": "http://java-bench-alb-1936020596.us-east-1.elb.amazonaws.com",
+    "jvm": {
+      "settings": "-Xmx1024m -XX:+UseG1GC"
+    }
+  },
+  "prometheus": {
+    "fetchMetrics": true,
+    "step": "60s"
+  },
+  "ecs": {
+    "region": "us-east-1",
+    "clusterName": "java-bench-cluster",
+    "serviceName": "java-bench-service",
+    "fetchMetrics": true,
+    "metricsPeriodSeconds": 60
+  }
+}

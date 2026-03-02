@@ -1,0 +1,90 @@
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-1-read-heavy.js
+        output: json (results/java21/scenario1/k6-out.json)
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 500 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] ========================================      source=console
+INFO[0000] TEST START TIME                               source=console
+INFO[0000] ========================================      source=console
+INFO[0000] ISO Format: 2026-02-25T17:31:38.245Z          source=console
+INFO[0000] Epoch (ms): 1772040698245                     source=console
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0841] ========================================      source=console
+INFO[0841] TEST END TIME                                 source=console
+INFO[0841] ========================================      source=console
+INFO[0841] ISO Format: 2026-02-25T17:45:40.030Z          source=console
+INFO[0841] Epoch (ms): 1772041540030                     source=console
+INFO[0841] Running teardown - checking application health...  source=console
+INFO[0841] ========================================      source=console
+INFO[0841] TEST DURATION: 841.785 seconds (14.03 minutes)  source=console
+INFO[0841] ========================================      source=console
+INFO[0841]
+========== Read-Heavy Scenario ==========    source=console
+INFO[0841] Start time: 2026-02-25T17:31:38.245Z          source=console
+INFO[0841] End time: 2026-02-25T17:45:40.030Z            source=console
+INFO[0841] Duration: 841.785 seconds                     source=console
+INFO[0841] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✓ 'p(99)<1000' p(99)=668.54ms
+    ✓ 'p(95)<500' p(95)=372.66ms
+    ✓ 'p(50)<100' p(50)=53.67ms
+
+    http_req_failed
+    ✓ 'rate<0.05' rate=1.11%
+
+    http_reqs
+    ✓ 'count>0' count=124290
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 248578 295.267199/s
+    checks_succeeded...: 98.69% 245330 out of 248578
+    checks_failed......: 1.30%  3248 out of 248578
+
+    ✓ Health check status is 200
+    ✓ GET /customers/{id} status is 200
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  98% — ✓ 73392 / ✗ 1078
+    ✓ GET /customers?search status is 200
+    ✗ GET /customers?search response time < 500ms
+      ↳  92% — ✓ 22978 / ✗ 1828
+    ✓ POST /customers status is 201 or 200
+    ✗ POST /customers response time < 500ms
+      ↳  98% — ✓ 24670 / ✗ 342
+
+    HTTP
+    http_req_duration..............: avg=99.88ms  min=33.51ms med=53.67ms max=1.8s  p(90)=212.95ms p(95)=372.66ms
+      { expected_response:true }...: avg=100.45ms min=33.51ms med=53.85ms max=1.8s  p(90)=215.37ms p(95)=374.6ms
+    http_req_failed................: 1.11%  1387 out of 124290
+    http_reqs......................: 124290 147.634787/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.59s    min=77.09ms med=1.59s   max=4.05s p(90)=2.4s     p(95)=2.54s
+    iterations.....................: 124288 147.632412/s
+    vus............................: 1      min=1              max=499
+    vus_max........................: 500    min=500            max=500
+
+    NETWORK
+    data_received..................: 4.7 GB 5.6 MB/s
+    data_sent......................: 21 MB  25 kB/s
+
+
+
+
+running (14m01.9s), 000/500 VUs, 124288 complete and 0 interrupted iterations
+default ✓ [======================================] 000/500 VUs  14m0s

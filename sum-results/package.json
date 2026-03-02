@@ -1,0 +1,14 @@
+{
+  "name": "sum-results",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Summarize k6, Container Insights, and Prometheus metrics for comparison runs.",
+  "scripts": {
+    "summarize": "node summarize.js config.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ecs": "^3.888.0",
+    "@aws-sdk/client-cloudwatch": "^3.888.0"
+  }
+}

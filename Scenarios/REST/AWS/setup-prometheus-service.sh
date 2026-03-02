@@ -155,21 +155,49 @@ aws ecs register-task-definition \
   --cli-input-json file:///tmp/prometheus-task-def.json \
   --region "$AWS_REGION"
 
-aws ecs create-service \
+SERVICE_EXISTS=$(aws ecs describe-services \
   --cluster "$ECS_CLUSTER_NAME" \
-  --service-name "$ECS_PROM_SERVICE_NAME" \
-  --task-definition java-bench-prometheus \
-  --desired-count 1 \
-  --launch-type FARGATE \
-  --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2${SUBNET_3:+,$SUBNET_3}],securityGroups=[$ECS_SG_ID],assignPublicIp=ENABLED}" \
-  --load-balancers "targetGroupArn=$PROM_TG_ARN,containerName=prometheus,containerPort=9090" \
-  --region "$AWS_REGION" 2>/dev/null || true
+  --services "$ECS_PROM_SERVICE_NAME" \
+  --region "$AWS_REGION" \
+  --query 'services[0].status' \
+  --output text 2>/dev/null || echo "")
 
-aws ecs update-service \
-  --cluster "$ECS_CLUSTER_NAME" \
-  --service "$ECS_PROM_SERVICE_NAME" \
-  --force-new-deployment \
-  --region "$AWS_REGION"
+if [[ "$SERVICE_EXISTS" == "ACTIVE" ]]; then
+  echo "Service exists, updating with new task definition..."
+  aws ecs update-service \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --service "$ECS_PROM_SERVICE_NAME" \
+    --task-definition java-bench-prometheus \
+    --force-new-deployment \
+    --region "$AWS_REGION"
+elif [[ "$SERVICE_EXISTS" == "DRAINING" ]]; then
+  echo "Service is draining, waiting for it to become inactive..."
+  aws ecs wait services-inactive \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --services "$ECS_PROM_SERVICE_NAME" \
+    --region "$AWS_REGION"
+  echo "Creating new Prometheus service..."
+  aws ecs create-service \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --service-name "$ECS_PROM_SERVICE_NAME" \
+    --task-definition java-bench-prometheus \
+    --desired-count 1 \
+    --launch-type FARGATE \
+    --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2${SUBNET_3:+,$SUBNET_3}],securityGroups=[$ECS_SG_ID],assignPublicIp=ENABLED}" \
+    --load-balancers "targetGroupArn=$PROM_TG_ARN,containerName=prometheus,containerPort=9090" \
+    --region "$AWS_REGION"
+else
+  echo "Creating new Prometheus service..."
+  aws ecs create-service \
+    --cluster "$ECS_CLUSTER_NAME" \
+    --service-name "$ECS_PROM_SERVICE_NAME" \
+    --task-definition java-bench-prometheus \
+    --desired-count 1 \
+    --launch-type FARGATE \
+    --network-configuration "awsvpcConfiguration={subnets=[$SUBNET_1,$SUBNET_2${SUBNET_3:+,$SUBNET_3}],securityGroups=[$ECS_SG_ID],assignPublicIp=ENABLED}" \
+    --load-balancers "targetGroupArn=$PROM_TG_ARN,containerName=prometheus,containerPort=9090" \
+    --region "$AWS_REGION"
+fi
 
 echo "Waiting for Prometheus service to stabilize..."
 aws ecs wait services-stable \

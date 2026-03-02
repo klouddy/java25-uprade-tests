@@ -43,9 +43,9 @@ EXPOSE 8080
 
 # Set default JVM options (can be overridden at runtime)
 # G1GC: Garbage collector
-# Explicit heap size: 512MB to avoid OOM with container limit
+# Explicit heap size: 1024MB to avoid OOM with container limit
 # HeapDump: captures memory state on OutOfMemory errors
-ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
+ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \

@@ -45,7 +45,7 @@ EXPOSE 8080
 # ZGC: Low-latency garbage collector for better response times
 # GC logging: captures GC pause times and frequency for performance analysis
 # HeapDump: captures memory state on OutOfMemory errors
-ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -Xmx512m -XX:+HeapDumpOnOutOfMemoryError"
+ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
