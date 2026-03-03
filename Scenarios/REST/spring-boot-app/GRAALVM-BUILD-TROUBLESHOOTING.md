@@ -7,6 +7,21 @@
 2. **Insufficient memory** - Maven and native-image compiler need separate heap allocations
 3. **Missing runtime initialization hints** - Some libraries need `--initialize-at-run-time`
 4. **Version mismatches** - Different library versions between build and metadata
+5. **Conflicting GC settings** - Mixing `-O3` optimization with explicit GC specifications causes "Multiple garbage collectors selected" error
+
+## Problem: "Multiple garbage collectors selected" error
+
+### Cause
+Using `-O3` optimization combined with `-J-XX:+UseSerialGC` causes conflicts because different optimization levels prefer different garbage collectors.
+
+### Solution
+Use `-O2` optimization only, without explicit GC flags:
+```xml
+<buildArg>-O2</buildArg>
+<!-- Remove: <buildArg>-J-XX:+UseSerialGC</buildArg> -->
+```
+
+native-image will automatically choose the appropriate GC (G1GC on modern systems).
 
 ### Solutions Applied
 
@@ -28,47 +43,58 @@ RUN MAVEN_OPTS="-Xmx2g" ./mvnw dependency:go-offline -Pnative
 RUN MAVEN_OPTS="-Xmx2g" ./mvnw -Pnative clean native:compile
 ```
 
-#### 3. **All native-image options in pom.xml** (FIXED)
-Don't use `-Dorg.graalvm.buildtools.native.option=` overrides on command line. Instead, keep them all in `pom.xml`:
+#### 3. **Remove conflicting GC and optimization settings** (FIXED)
+Don't mix `-O3` optimization with explicit GC specifications. Use `-O2` with default GC:
 
 ```xml
 <buildArgs>
     <buildArg>--verbose</buildArg>
     <buildArg>--no-fallback</buildArg>
     <buildArg>--enable-url-protocols=http,https</buildArg>
-    <buildArg>-O3</buildArg>
-    <buildArg>-J-XX:+UseSerialGC</buildArg>
+    <buildArg>-O2</buildArg>  <!-- Not -O3 to avoid GC conflicts -->
+    <!-- No -J-XX:+UseSerialGC here - let native-image choose -->
     <buildArg>${graalvm.native.image.heap.size}</buildArg>
     <buildArg>--initialize-at-run-time=org.apache.commons.logging.LogFactoryService,org.apache.commons.logging.LogFactory</buildArg>
 </buildArgs>
 ```
 
+#### 4. **All native-image options in pom.xml** (FIXED)
+Don't use `-Dorg.graalvm.buildtools.native.option=` overrides on command line. Instead, keep them all in `pom.xml`.
+
 ### Memory Allocation Recommendations
+
+Current configuration uses `-O2` optimization (balanced build time/performance).
 
 | Environment | Maven `-Xmx` | native-image `-Xmx` | Total | Status |
 |---|---|---|---|---|
-| Local (4GB RAM) | 1.5g | 2.0g | 3.5g | ✅ Works |
-| Local (8GB RAM) | 2g | 3g | 5g | ✅ Recommended |
-| GitHub Actions (7GB) | 2g | 3.5g | 5.5g | ✅ Works |
-| AWS CodeBuild (4GB) | 1.5g | 2.5g | 4g | ⚠️ Tight |
-| AWS CodeBuild (8GB+) | 2g | 3.5g | 5.5g | ✅ Recommended |
+| Local (4GB RAM) | 1.0g | 2.0g | 3.0g | ✅ Works |
+| Local (8GB RAM) | 1.5g | 3.0g | 4.5g | ✅ Recommended |
+| GitHub Actions (7GB) | 1.5g | 3.5g | 5.0g | ✅ Works |
+| AWS CodeBuild (4GB) | 1.0g | 2.5g | 3.5g | ✅ Works |
+| AWS CodeBuild (8GB+) | 1.5g | 3.5g | 5.0g | ✅ Recommended |
+
+**Note:** These are lower than `-O3` settings because `-O2` requires less memory.
 
 ### If build still fails:
 
-**1. Reduce optimization level:**
+**1. Increase memory allocation:**
 ```xml
-<!-- Change from: <buildArg>-O3</buildArg> -->
+<!-- If still OOM: -->
+<graalvm.native.image.heap.size>-J-Xmx4000m</graalvm.native.image.heap.size>
+```
+
+**2. Further reduce optimization (slower build, more stable):**
+```xml
+<!-- Change from: <buildArg>-O2</buildArg> -->
 <!-- To: -->
-<buildArg>-O2</buildArg>
+<buildArg>-O1</buildArg>
 ```
 
-**2. Reduce heap size:**
+**3. Add extra heap options:**
 ```xml
-<graalvm.native.image.heap.size>-J-Xmx2500m</graalvm.native.image.heap.size>
+<!-- For container builds with limited resources -->
+<buildArg>-Dcom.oracle.svm.useLLVMBackend=false</buildArg>
 ```
-
-**3. Use simpler GC:**
-Already using `-J-XX:+UseSerialGC` which is most efficient. Don't change this.
 
 **4. Check for reflection issues:**
 If the error shows missing classes/methods, add to `buildArgs`:

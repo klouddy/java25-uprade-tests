@@ -174,10 +174,8 @@
                                 <buildArg>-H:+AddAllCharsets</buildArg>
                                 <!-- Enable monitoring agents for CloudWatch/Prometheus -->
                                 <buildArg>--enable-url-protocols=http,https</buildArg>
-                                <!-- Optimize for throughput (longer build, better runtime) -->
-                                <buildArg>-O3</buildArg>
-                                <!-- Use serial GC for lower memory footprint during build -->
-                                <buildArg>-J-XX:+UseSerialGC</buildArg>
+                                <!-- Optimize for smaller image and reasonable build time -->
+                                <buildArg>-O2</buildArg>
                                 <!-- Allocate memory to compiler process (adjust if OOM) -->
                                 <buildArg>${graalvm.native.image.heap.size}</buildArg>
                                 <!-- Initialize commons-logging at runtime (IMPORTANT for AWS SDK) -->
