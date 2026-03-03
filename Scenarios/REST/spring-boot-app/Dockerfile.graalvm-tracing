@@ -1,0 +1,66 @@
+# Dockerfile for GraalVM Native Image Agent - Metadata Generation
+# This file is used to capture reflection, resource, and initialization metadata
+# Run this image and exercise the application, then extract the /tmp/agent directory
+# containing reflect-config.json, resource-config.json, etc.
+#
+# Usage:
+#   1. Build: docker build -f Dockerfile.graalvm-tracing -t spring-boot-tracing-agent .
+#   2. Run: docker run --rm -d --name app-trace -p 8080:8080 spring-boot-tracing-agent
+#   3. Test: curl http://localhost:8080/actuator/health (and other endpoints)
+#   4. Copy: docker cp app-trace:/tmp/agent ./generated-metadata
+#   5. Stop: docker stop app-trace
+
+FROM ghcr.io/graalvm/native-image-community:21-ol9
+
+WORKDIR /app
+
+# Install Maven only; GraalVM JDK is already in the base image
+RUN microdnf install -y \
+    maven \
+    && microdnf clean all
+
+# Force usage of GraalVM Java binary so native-image-agent is available
+ENV JAVA_HOME=/usr/lib64/graalvm/graalvm-community-java21
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Copy Maven wrapper files
+COPY .mvn/ .mvn/
+COPY mvnw ./
+RUN chmod +x mvnw
+
+# Copy pom files (use standard pom.xml, not pom-graalvm.xml)
+# The agent runs the regular Spring Boot app, not native compilation
+COPY pom.xml ./
+
+# Download dependencies and cache them (optional, for faster builds)
+RUN MAVEN_OPTS="-Xmx2g" ./mvnw dependency:go-offline
+
+# Copy source code
+COPY src ./src
+
+# Build executable jar during image build so runtime uses a single JVM process
+RUN MAVEN_OPTS="-Xmx2g" ./mvnw -DskipTests clean package
+
+# Expose the application port
+EXPOSE 8080
+
+# Create directory for agent output
+RUN mkdir -p /tmp/agent
+
+# Run Spring Boot application with GraalVM Native Image Agent enabled
+# The agent monitors all runtime activity and captures:
+#   - Reflection access patterns (reflect-config.json)
+#   - Resource loading paths (resource-config.json)
+#   - Serialization requirements (serialization-config.json)
+#   - JNI usage patterns (jni-config.json)
+#   - Proxy definitions (proxy-config.json)
+#
+# The metadata files will be written to /tmp/agent/ as the app runs
+ENV AGENT_OPTS="config-output-dir=/tmp/agent"
+
+# Override native-image base image entrypoint so CMD runs as intended
+ENTRYPOINT []
+
+# Run the packaged Spring Boot jar with a single JVM process and tracing agent
+# This avoids lock contention from multiple JVMs writing to /tmp/agent
+CMD ["sh", "-c", "mkdir -p /tmp/agent && rm -f /tmp/agent/.lock && $JAVA_HOME/bin/java -agentlib:native-image-agent=$AGENT_OPTS -Dspring.profiles.active=local -jar target/*.jar"]
