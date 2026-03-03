@@ -25,9 +25,9 @@
         <aws-java-sdk.version>2.25.5</aws-java-sdk.version>
         <native.maven.plugin.version>0.10.3</native.maven.plugin.version>
         <!-- GraalVM native-image compiler heap size (adjust if build runs out of memory) -->
-        <!-- GitHub Actions: 4GB available, set to 3.5GB for native-image compiler -->
+        <!-- GitHub Actions: 15GB available, set to 8GB for native-image compiler -->
         <!-- Local builds with limited RAM: -J-Xmx2g, AWS CodeBuild (4GB+): -J-Xmx3g or higher -->
-        <graalvm.native.image.heap.size>-J-Xmx3500m</graalvm.native.image.heap.size>
+        <graalvm.native.image.heap.size>-J-Xmx8g</graalvm.native.image.heap.size>
     </properties>
     
     <dependencyManagement>
@@ -174,8 +174,8 @@
                                 <buildArg>-H:+AddAllCharsets</buildArg>
                                 <!-- Enable monitoring agents for CloudWatch/Prometheus -->
                                 <buildArg>--enable-url-protocols=http,https</buildArg>
-                                <!-- Optimize for smaller image and reasonable build time -->
-                                <buildArg>-O2</buildArg>
+                                <!-- Quick build optimization (lower memory, faster compile) -->
+                                <buildArg>-Ob</buildArg>
                                 <!-- Allocate memory to compiler process (adjust if OOM) -->
                                 <buildArg>${graalvm.native.image.heap.size}</buildArg>
                                 <!-- Initialize commons-logging at runtime (IMPORTANT for AWS SDK) -->

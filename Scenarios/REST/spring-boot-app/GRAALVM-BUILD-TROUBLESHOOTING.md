@@ -61,19 +61,40 @@ Don't mix `-O3` optimization with explicit GC specifications. Use `-O2` with def
 #### 4. **All native-image options in pom.xml** (FIXED)
 Don't use `-Dorg.graalvm.buildtools.native.option=` overrides on command line. Instead, keep them all in `pom.xml`.
 
+## Problem: "OutOfMemoryError: GC overhead limit exceeded"
+
+### Cause
+native-image compiler needs significant heap space for Spring Boot applications with many dependencies (AWS SDK, Hibernate, etc.). GitHub Actions VMs have ~15GB but default heap was only 3.5GB.
+
+### Solution
+Increase native-image heap significantly and use quick build optimization:
+```xml
+<graalvm.native.image.heap.size>-J-Xmx8g</graalvm.native.image.heap.size>
+```
+
+And use `-Ob` (quick build) instead of `-O2`:
+```xml
+<buildArg>-Ob</buildArg>  <!-- Quick build: faster, less memory -->
+```
+
 ### Memory Allocation Recommendations
 
-Current configuration uses `-O2` optimization (balanced build time/performance).
+Current configuration uses `-Ob` quick build optimization (minimal memory, fast compile).
 
-| Environment | Maven `-Xmx` | native-image `-Xmx` | Total | Status |
-|---|---|---|---|---|
-| Local (4GB RAM) | 1.0g | 2.0g | 3.0g | ✅ Works |
-| Local (8GB RAM) | 1.5g | 3.0g | 4.5g | ✅ Recommended |
-| GitHub Actions (7GB) | 1.5g | 3.5g | 5.0g | ✅ Works |
-| AWS CodeBuild (4GB) | 1.0g | 2.5g | 3.5g | ✅ Works |
-| AWS CodeBuild (8GB+) | 1.5g | 3.5g | 5.0g | ✅ Recommended |
+| Environment | Maven `-Xmx` | native-image `-Xmx` | Total | Build Time | Status |
+|---|---|---|---|---|---|
+| GitHub Actions (15GB) | 2g | 8g | 10g | ~10-15 min | ✅ Recommended |
+| AWS CodeBuild (8GB) | 1.5g | 5g | 6.5g | ~10-15 min | ✅ Works |
+| AWS CodeBuild (15GB) | 2g | 8g | 10g | ~10-15 min | ✅ Recommended |
+| Local (8GB RAM) | 1g | 4g | 5g | ~15-20 min | ⚠️ Tight |
+| Local (16GB RAM) | 2g | 8g | 10g | ~10-15 min | ✅ Works |
 
-**Note:** These are lower than `-O3` settings because `-O2` requires less memory.
+**Optimization levels and memory:**
+- `-Ob` (quick build): 4-8GB recommended, fastest compile, good performance
+- `-O2` (moderate): 6-10GB recommended, slower compile, better performance  
+- `-O3` (full): 8-12GB+ recommended, slowest compile, best performance
+
+**Note:** For benchmarking, you may want to later rebuild with `-O2` or `-O3` for better runtime performance.
 
 ### If build still fails:
 
