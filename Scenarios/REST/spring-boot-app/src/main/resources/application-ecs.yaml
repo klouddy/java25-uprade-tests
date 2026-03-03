@@ -5,6 +5,12 @@ spring:
     password: ${DATABASE_PASSWORD}
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}
+  jpa:
+    properties:
+      hibernate:
+        bytecode:
+          provider: none
+          use_reflection_optimizer: false
 
 server:
   port: 8080
