@@ -25,6 +25,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        bytecode:
+          provider: none
+          use_reflection_optimizer: false
         format_sql: false
         jdbc:
           batch_size: 20
