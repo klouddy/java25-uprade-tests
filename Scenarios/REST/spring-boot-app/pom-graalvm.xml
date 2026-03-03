@@ -25,8 +25,9 @@
         <aws-java-sdk.version>2.25.5</aws-java-sdk.version>
         <native.maven.plugin.version>0.10.3</native.maven.plugin.version>
         <!-- GraalVM native-image compiler heap size (adjust if build runs out of memory) -->
-        <!-- For systems with limited RAM: -J-Xmx2g, For systems with plenty: -J-Xmx4g -->
-        <graalvm.native.image.heap.size>-J-Xmx3g</graalvm.native.image.heap.size>
+        <!-- GitHub Actions: 4GB available, set to 3.5GB for native-image compiler -->
+        <!-- Local builds with limited RAM: -J-Xmx2g, AWS CodeBuild (4GB+): -J-Xmx3g or higher -->
+        <graalvm.native.image.heap.size>-J-Xmx3500m</graalvm.native.image.heap.size>
     </properties>
     
     <dependencyManagement>
@@ -179,6 +180,8 @@
                                 <buildArg>-J-XX:+UseSerialGC</buildArg>
                                 <!-- Allocate memory to compiler process (adjust if OOM) -->
                                 <buildArg>${graalvm.native.image.heap.size}</buildArg>
+                                <!-- Initialize commons-logging at runtime (IMPORTANT for AWS SDK) -->
+                                <buildArg>--initialize-at-run-time=org.apache.commons.logging.LogFactoryService,org.apache.commons.logging.LogFactory</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>

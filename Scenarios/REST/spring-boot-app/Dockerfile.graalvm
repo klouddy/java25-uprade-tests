@@ -9,30 +9,25 @@ WORKDIR /app
 # Install Maven
 RUN microdnf install -y maven
 
-# Copy Maven wrapper and pom.xml
+# Copy Maven wrapper and pom-graalvm.xml
 COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
+COPY mvnw ./
+COPY pom-graalvm.xml pom.xml
 
 # Make mvnw executable
 RUN chmod +x mvnw
 
 # Download dependencies (cache layer)
-RUN ./mvnw dependency:go-offline -Pnative
+RUN MAVEN_OPTS="-Xmx2g" ./mvnw dependency:go-offline -Pnative
 
 # Copy source code
 COPY src ./src
 
 # Build native image with Spring AOT processing
 # This takes several minutes but produces a standalone native executable
-# Memory settings for native-image compiler:
-#   -J-Xmx3g: Allocate 3GB to compiler (adjust based on system RAM)
-#   -J-XX:+UseSerialGC: Use serial GC for lower memory footprint
-RUN ./mvnw -Pnative native:compile \
-    -DskipTests \
-    -Dorg.graalvm.buildtools.native.option=--enable-url-protocols=http,https \
-    -Dorg.graalvm.buildtools.native.option=-J-Xmx3g \
-    -Dorg.graalvm.buildtools.native.option=-J-XX:+UseSerialGC \
-    -Dorg.graalvm.nativeimage.buildArgs=--initialize-at-run-time=org.apache.commons.logging.LogFactoryService,org.apache.commons.logging.LogFactory
+# All native-image compiler settings are defined in pom.xml profile
+# MAVEN_OPTS increases Maven's heap to 2GB for native-image build
+RUN MAVEN_OPTS="-Xmx2g" ./mvnw -Pnative clean native:compile -DskipTests
 
 # Runtime stage - use minimal distroless or alpine image
 FROM oraclelinux:9-slim
