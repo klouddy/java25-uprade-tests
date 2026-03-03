@@ -466,7 +466,22 @@ Add observations and findings here.
       const scenarioNum = SetupRunCommand.SCENARIO_MAP[answers.scenario];
       const versionTag = answers.javaVersion === 'GraalVM' ? 'graalvm' : `java${answers.javaVersion}`;
       const imageTag = `benchmark-app:${answers.scenarioType.toLowerCase()}-${versionTag}-${scenarioNum}-${dateStr}-${runNumber}`;
-      const imageFullPath = `${SetupRunCommand.ECR_REGISTRY}/${SetupRunCommand.ECR_REPOSITORY}:${answers.scenarioType.toLowerCase()}-${versionTag}-${scenarioNum}-${dateStr}-${runNumber}`;
+      let imageFullPath = `${SetupRunCommand.ECR_REGISTRY}/${SetupRunCommand.ECR_REPOSITORY}:${answers.scenarioType.toLowerCase()}-${versionTag}-${scenarioNum}-${dateStr}-${runNumber}`;
+
+      // For GraalVM, allow using a prebuilt image URI instead of building locally
+      if (answers.javaVersion === 'GraalVM') {
+        const imageAnswer = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'graalvmImageUri',
+            message: 'Prebuilt GraalVM image URI (ECR) to use',
+            default: imageFullPath
+          }
+        ]);
+        if (imageAnswer.graalvmImageUri && imageAnswer.graalvmImageUri.trim().length > 0) {
+          imageFullPath = imageAnswer.graalvmImageUri.trim();
+        }
+      }
       
       config.scenarioNumber = scenarioNum;
       config.dockerImage = imageFullPath;
@@ -505,14 +520,18 @@ Add observations and findings here.
           this.log(chalk.green(`✓ application-local.yaml saved to run directory`));
           this.log(chalk.cyan(`  Virtual Threads: ${config.virtualThreadsEnabled ? 'ENABLED' : 'DISABLED'}`));
 
-          // Build Podman image
+          // Build and push image for Java versions. GraalVM assumes prebuilt image.
           this.log(chalk.cyan(`   Image tag: ${imageTag}`));
           this.log(chalk.cyan(`   ECR path: ${imageFullPath}`));
-          this.buildDockerImage(runDockerfilePath, imageTag, imageFullPath, projectRoot);
+          if (answers.javaVersion !== 'GraalVM') {
+            this.buildDockerImage(runDockerfilePath, imageTag, imageFullPath, projectRoot);
 
-          // Push to ECR
-          this.log(chalk.bold('\n📤 Pushing image to ECR...\n'));
-          this.pushImageToECR(imageFullPath);
+            // Push to ECR
+            this.log(chalk.bold('\n📤 Pushing image to ECR...\n'));
+            this.pushImageToECR(imageFullPath);
+          } else {
+            this.log(chalk.yellow('⚠️  GraalVM selected: skipping image build/push (using prebuilt image)'));
+          }
 
           // Read task definition template and modify it
           this.log(chalk.bold('\n📋 Preparing ECS task definition...\n'));

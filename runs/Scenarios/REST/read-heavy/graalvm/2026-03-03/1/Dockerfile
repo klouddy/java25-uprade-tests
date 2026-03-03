@@ -1,5 +1,6 @@
 # Multi-stage Dockerfile for GraalVM Native Image
 # Optimized for AWS Fargate deployment with amd64 architecture
+# Note: Native image compilation requires significant memory (4GB+)
 
 FROM ghcr.io/graalvm/native-image-community:21-ol9 AS builder
 
@@ -8,22 +9,25 @@ WORKDIR /app
 # Install Maven
 RUN microdnf install -y maven
 
-# Copy Maven wrapper and pom.xml
+# Copy Maven wrapper and pom-graalvm.xml
 COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
+COPY mvnw ./
+COPY pom-graalvm.xml pom.xml
 
 # Make mvnw executable
 RUN chmod +x mvnw
 
 # Download dependencies (cache layer)
-RUN ./mvnw dependency:go-offline -Pnative
+RUN MAVEN_OPTS="-Xmx2g" ./mvnw dependency:go-offline -Pnative
 
 # Copy source code
 COPY src ./src
 
 # Build native image with Spring AOT processing
 # This takes several minutes but produces a standalone native executable
-RUN ./mvnw -Pnative native:compile -DskipTests
+# All native-image compiler settings are defined in pom.xml profile
+# MAVEN_OPTS increases Maven's heap to 2GB for native-image build
+RUN MAVEN_OPTS="-Xmx2g" ./mvnw -Pnative clean native:compile -DskipTests
 
 # Runtime stage - use minimal distroless or alpine image
 FROM oraclelinux:9-slim
