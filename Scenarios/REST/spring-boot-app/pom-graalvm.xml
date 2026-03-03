@@ -72,12 +72,24 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>cloudwatch</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <!-- AWS SDK v2 STS for credential resolution -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>sts</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>
@@ -178,8 +190,6 @@
                                 <buildArg>-Ob</buildArg>
                                 <!-- Allocate memory to compiler process (adjust if OOM) -->
                                 <buildArg>${graalvm.native.image.heap.size}</buildArg>
-                                <!-- Initialize commons-logging at runtime (IMPORTANT for AWS SDK) -->
-                                <buildArg>--initialize-at-run-time=org.apache.commons.logging.LogFactoryService,org.apache.commons.logging.LogFactory</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
