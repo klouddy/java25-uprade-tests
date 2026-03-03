@@ -5,6 +5,10 @@
       {
         "name": "getScriptFilename",
         "parameterTypes": []
+      },
+      {
+        "name": "setScriptFilename",
+        "parameterTypes": ["java.lang.String"]
       }
     ]
   }
