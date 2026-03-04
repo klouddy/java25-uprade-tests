@@ -9,6 +9,6 @@
   "virtualThreadsEnabled": false,
   "dbPoolSize": 20,
   "scenarioNumber": 1,
-  "dockerImage": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-graalvm-2026-03-03-134058",
+  "dockerImage": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-graalvm-2026-03-03-212648",
   "imageTag": "benchmark-app:rest-graalvm-1-2026-03-03-1"
 }

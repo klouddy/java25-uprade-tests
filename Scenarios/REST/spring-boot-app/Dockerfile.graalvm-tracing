@@ -56,7 +56,8 @@ RUN mkdir -p /tmp/agent
 #   - Proxy definitions (proxy-config.json)
 #
 # The metadata files will be written to /tmp/agent/ as the app runs
-ENV AGENT_OPTS="config-output-dir=/tmp/agent"
+# Enable predefined class capture for ByteBuddy/runtime class definition
+ENV AGENT_OPTS="config-output-dir=/tmp/agent,experimental-class-define-support"
 
 # Override native-image base image entrypoint so CMD runs as intended
 ENTRYPOINT []

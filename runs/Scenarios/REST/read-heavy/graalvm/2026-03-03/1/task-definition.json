@@ -11,7 +11,7 @@
   "containerDefinitions": [
     {
       "name": "java-bench-app",
-      "image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-graalvm-2026-03-03-134058",
+      "image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-graalvm-2026-03-03-212648",
       "portMappings": [
         {
           "containerPort": 8080,
