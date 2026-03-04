@@ -1,0 +1,79 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-2-balanced.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/balanced/java21/2026-03-04/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-2-balanced.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/balanced/java21/2026-03-04/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 300 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 300 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0841] Running teardown - checking application health...  source=console
+INFO[0841]
+========== Balanced Scenario ==========      source=console
+INFO[0841] Start time: 2026-03-04T17:32:39.861Z          source=console
+INFO[0841] End time: 2026-03-04T17:46:41.362Z            source=console
+INFO[0841] Duration: 841.501 seconds                     source=console
+INFO[0841] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<1500' p(99)=1.91s
+    ✗ 'p(95)<750' p(95)=1.24s
+    ✓ 'p(50)<150' p(50)=52.48ms
+
+    http_req_failed
+    ✓ 'rate<0.05' rate=0.79%
+
+    http_reqs
+    ✓ 'count>0' count=73046
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 146090 173.578924/s
+    checks_succeeded...: 92.57% 135248 out of 146090
+    checks_failed......: 7.42%  10842 out of 146090
+
+    ✓ Health check status is 200
+    ✓ POST /customers status is 201 or 200
+    ✗ POST /customers response time < 500ms
+      ↳  85% — ✓ 24890 / ✗ 4192
+    ✓ GET /customers?search status is 200
+    ✗ GET /customers?search response time < 500ms
+      ↳  82% — ✓ 12113 / ✗ 2592
+    ✓ GET /customers/{id} status is 200
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  86% — ✓ 25199 / ✗ 4058
+
+    HTTP
+    http_req_duration..............: avg=229.22ms min=34.09ms med=52.48ms max=4.39s p(90)=866.66ms p(95)=1.24s
+      { expected_response:true }...: avg=230.65ms min=34.09ms med=52.57ms max=4.39s p(90)=873.35ms p(95)=1.24s
+    http_req_failed................: 0.79%  580 out of 73046
+    http_reqs......................: 73046  86.79065/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.72s    min=73.11ms med=1.7s    max=6.22s p(90)=2.58s    p(95)=2.95s
+    iterations.....................: 73044  86.788274/s
+    vus............................: 1      min=1            max=300
+    vus_max........................: 300    min=300          max=300
+
+    NETWORK
+    data_received..................: 3.3 GB 3.9 MB/s
+    data_sent......................: 15 MB  18 kB/s
+
+
+
+
+running (14m01.6s), 000/300 VUs, 73044 complete and 0 interrupted iterations
+default ✓ [======================================] 000/300 VUs  14m0s
+ERRO[0842] thresholds on metrics 'http_req_duration' have been crossed
