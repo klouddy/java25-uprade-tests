@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-03-06T15:14:27.161Z",
+  "scenarioType": "REST",
+  "scenario": "Burst Spike",
+  "javaVersion": "25",
+  "jvmOptions": "-XX:+UseG1GC -Xmx1024m",
+  "cpu": 512,
+  "memory": 2048,
+  "virtualThreadsEnabled": false,
+  "dbPoolSize": 20,
+  "scenarioNumber": 5,
+  "dockerImage": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-java25-5-2026-03-06-1",
+  "imageTag": "benchmark-app:rest-java25-5-2026-03-06-1"
+}

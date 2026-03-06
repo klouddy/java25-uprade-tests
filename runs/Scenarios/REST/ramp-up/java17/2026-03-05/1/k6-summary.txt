@@ -1,0 +1,88 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-4-ramp-up.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/ramp-up/java17/2026-03-05/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-4-ramp-up.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/ramp-up/java17/2026-03-05/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 1000 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 1000 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] Running setup - checking application health before ramp-up test...  source=console
+WARN[0800] Request Failed                                error="Get \"http://java-bench-alb-115903653.us-east-1.elb.amazonaws.com/customers?search=John\": request timeout"
+WARN[0801] Request Failed                                error="request timeout"
+WARN[0801] Request Failed                                error="request timeout"
+WARN[0802] Request Failed                                error="Get \"http://java-bench-alb-115903653.us-east-1.elb.amazonaws.com/customers?search=John\": request timeout"
+WARN[0805] Request Failed                                error="Get \"http://java-bench-alb-115903653.us-east-1.elb.amazonaws.com/customers?search=John\": request timeout"
+WARN[0807] Request Failed                                error="request timeout"
+WARN[0807] Request Failed                                error="Get \"http://java-bench-alb-115903653.us-east-1.elb.amazonaws.com/customers?search=John\": request timeout"
+WARN[0807] Request Failed                                error="Get \"http://java-bench-alb-115903653.us-east-1.elb.amazonaws.com/customers?search=John\": request timeout"
+INFO[0841] Running teardown - checking application health after ramp-up test...  source=console
+INFO[0841]
+========== Ramp-Up Scalability Scenario ==========  source=console
+INFO[0841] Start time: 2026-03-05T18:29:42.516Z          source=console
+INFO[0841] End time: 2026-03-05T18:43:43.909Z            source=console
+INFO[0841] Duration: 841.393 seconds                     source=console
+INFO[0841] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<3000' p(99)=14.27s
+
+    http_req_failed
+    ✓ 'rate<0.10' rate=3.70%
+
+    http_reqs
+    ✓ 'count>0' count=150008
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 300014 356.511008/s
+    checks_succeeded...: 66.05% 198189 out of 300014
+    checks_failed......: 33.94% 101825 out of 300014
+
+    ✓ Health check status is 200
+    ✗ GET /customers?search status is 200
+      ↳  97% — ✓ 29484 / ✗ 800
+    ✗ GET /customers?search response time < 500ms
+      ↳  32% — ✓ 9935 / ✗ 20349
+    ✗ GET /customers/{id} status is 200
+      ↳  97% — ✓ 87095 / ✗ 2415
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  35% — ✓ 31830 / ✗ 57680
+    ✗ POST /customers status is 201 or 200
+      ↳  97% — ✓ 29379 / ✗ 833
+    ✗ POST /customers response time < 500ms
+      ↳  34% — ✓ 10464 / ✗ 19748
+
+    HTTP
+    http_req_duration..............: avg=2.75s min=34.41ms med=1.3s  max=1m0s   p(90)=8.38s p(95)=9.58s
+      { expected_response:true }...: avg=2.85s min=34.41ms med=1.41s max=59.55s p(90)=8.41s p(95)=9.64s
+    http_req_failed................: 3.70%  5553 out of 150008
+    http_reqs......................: 150008 178.256692/s
+
+    EXECUTION
+    iteration_duration.............: avg=3.25s min=74.94ms med=1.8s  max=1m0s   p(90)=8.88s p(95)=10.08s
+    iterations.....................: 150002 178.249562/s
+    vus............................: 4      min=2              max=1000
+    vus_max........................: 1000   min=1000           max=1000
+
+    NETWORK
+    data_received..................: 6.5 GB 7.8 MB/s
+    data_sent......................: 26 MB  30 kB/s
+
+
+
+
+running (14m01.5s), 0000/1000 VUs, 150002 complete and 137 interrupted iterations
+default ✓ [======================================] 0000/1000 VUs  14m0s
+ERRO[0841] thresholds on metrics 'http_req_duration' have been crossed

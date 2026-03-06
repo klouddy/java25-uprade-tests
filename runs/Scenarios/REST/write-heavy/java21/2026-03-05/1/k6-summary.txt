@@ -1,0 +1,77 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-3-write-heavy.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/write-heavy/java21/2026-03-05/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-3-write-heavy.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/write-heavy/java21/2026-03-05/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 200 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0840] Running teardown - checking application health...  source=console
+INFO[0840]
+========== Write-Heavy Scenario ==========   source=console
+INFO[0840] Start time: 2026-03-05T13:36:13.984Z          source=console
+INFO[0840] End time: 2026-03-05T13:50:14.388Z            source=console
+INFO[0840] Duration: 840.404 seconds                     source=console
+INFO[0840] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✓ 'p(99)<2000' p(99)=170.79ms
+    ✓ 'p(95)<1000' p(95)=98.9ms
+    ✓ 'p(50)<200' p(50)=48.98ms
+
+    http_req_failed
+    ✓ 'rate<0.05' rate=0.15%
+
+    http_reqs
+    ✓ 'count>0' count=39151
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 78300  93.153899/s
+    checks_succeeded...: 99.99% 78295 out of 78300
+    checks_failed......: 0.00%  5 out of 78300
+
+    ✓ Health check status is 200
+    ✓ POST /customers status is 201 or 200
+    ✗ POST /customers response time < 500ms
+      ↳  99% — ✓ 31343 / ✗ 1
+    ✓ GET /customers?search status is 200
+    ✗ GET /customers?search response time < 500ms
+      ↳  99% — ✓ 3852 / ✗ 4
+    ✓ GET /customers/{id} status is 200
+    ✓ GET /customers/{id} response time < 500ms
+
+    HTTP
+    http_req_duration..............: avg=55.85ms min=34.65ms med=48.98ms max=925.24ms p(90)=72.45ms p(95)=98.9ms
+      { expected_response:true }...: avg=55.86ms min=34.65ms med=48.99ms max=925.24ms p(90)=72.47ms p(95)=98.94ms
+    http_req_failed................: 0.15%  62 out of 39151
+    http_reqs......................: 39151  46.578139/s
+
+    EXECUTION
+    iteration_duration.............: avg=2.29s   min=80.82ms med=2.29s   max=3.94s    p(90)=3.3s    p(95)=3.47s
+    iterations.....................: 39149  46.57576/s
+    vus............................: 2      min=1           max=200
+    vus_max........................: 200    min=200         max=200
+
+    NETWORK
+    data_received..................: 948 MB 1.1 MB/s
+    data_sent......................: 11 MB  13 kB/s
+
+
+
+
+running (14m00.5s), 000/200 VUs, 39149 complete and 0 interrupted iterations
+default ✓ [======================================] 000/200 VUs  14m0s

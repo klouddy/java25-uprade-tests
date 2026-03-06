@@ -1,0 +1,491 @@
+{
+  "periodSeconds": 60,
+  "CpuUtilized": {
+    "Average": {
+      "summary": {
+        "min": 301.3098046875,
+        "max": 511.82916666666665,
+        "avg": 453.247337704613,
+        "count": 14
+      },
+      "datapoints": [
+        {
+          "timestamp": "2026-03-06T14:16:00.000Z",
+          "value": 301.3098046875,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:17:00.000Z",
+          "value": 480.6279036458333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:18:00.000Z",
+          "value": 434.4037369791667,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:19:00.000Z",
+          "value": 488.96039062499995,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:20:00.000Z",
+          "value": 451.2530598958333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:21:00.000Z",
+          "value": 442.9505598958333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:22:00.000Z",
+          "value": 481.83826822916666,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:23:00.000Z",
+          "value": 511.82916666666665,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:24:00.000Z",
+          "value": 496.68199218750004,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:25:00.000Z",
+          "value": 484.123359375,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:26:00.000Z",
+          "value": 501.38380208333336,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:27:00.000Z",
+          "value": 506.5698958333333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:28:00.000Z",
+          "value": 383.79005045572916,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:29:00.000Z",
+          "value": 379.7407373046875,
+          "unit": "None"
+        }
+      ]
+    },
+    "Maximum": {
+      "summary": {
+        "min": 301.3098046875,
+        "max": 512,
+        "avg": 471.82318359375,
+        "count": 14
+      },
+      "datapoints": [
+        {
+          "timestamp": "2026-03-06T14:16:00.000Z",
+          "value": 301.3098046875,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:17:00.000Z",
+          "value": 480.6279036458333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:18:00.000Z",
+          "value": 434.4037369791667,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:19:00.000Z",
+          "value": 488.96039062499995,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:20:00.000Z",
+          "value": 451.2530598958333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:21:00.000Z",
+          "value": 442.9505598958333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:22:00.000Z",
+          "value": 481.83826822916666,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:23:00.000Z",
+          "value": 511.82916666666665,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:24:00.000Z",
+          "value": 496.68199218750004,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:25:00.000Z",
+          "value": 484.123359375,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:26:00.000Z",
+          "value": 501.38380208333336,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:27:00.000Z",
+          "value": 506.5698958333333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:28:00.000Z",
+          "value": 511.59263020833333,
+          "unit": "None"
+        },
+        {
+          "timestamp": "2026-03-06T14:29:00.000Z",
+          "value": 512,
+          "unit": "None"
+        }
+      ]
+    }
+  },
+  "MemoryUtilized": {
+    "Average": {
+      "summary": {
+        "min": 313,
+        "max": 1288,
+        "avg": 681.2142857142857,
+        "count": 14
+      },
+      "datapoints": [
+        {
+          "timestamp": "2026-03-06T14:16:00.000Z",
+          "value": 313,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:17:00.000Z",
+          "value": 360,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:18:00.000Z",
+          "value": 413,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:19:00.000Z",
+          "value": 505,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:20:00.000Z",
+          "value": 506,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:21:00.000Z",
+          "value": 581,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:22:00.000Z",
+          "value": 721,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:23:00.000Z",
+          "value": 1039,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:24:00.000Z",
+          "value": 1097,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:25:00.000Z",
+          "value": 719,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:26:00.000Z",
+          "value": 824,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:27:00.000Z",
+          "value": 1288,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:28:00.000Z",
+          "value": 535,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:29:00.000Z",
+          "value": 636,
+          "unit": "Megabytes"
+        }
+      ]
+    },
+    "Maximum": {
+      "summary": {
+        "min": 313,
+        "max": 1288,
+        "avg": 736.3571428571429,
+        "count": 14
+      },
+      "datapoints": [
+        {
+          "timestamp": "2026-03-06T14:16:00.000Z",
+          "value": 313,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:17:00.000Z",
+          "value": 360,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:18:00.000Z",
+          "value": 413,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:19:00.000Z",
+          "value": 505,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:20:00.000Z",
+          "value": 506,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:21:00.000Z",
+          "value": 581,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:22:00.000Z",
+          "value": 721,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:23:00.000Z",
+          "value": 1039,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:24:00.000Z",
+          "value": 1097,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:25:00.000Z",
+          "value": 719,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:26:00.000Z",
+          "value": 824,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:27:00.000Z",
+          "value": 1288,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:28:00.000Z",
+          "value": 1030,
+          "unit": "Megabytes"
+        },
+        {
+          "timestamp": "2026-03-06T14:29:00.000Z",
+          "value": 913,
+          "unit": "Megabytes"
+        }
+      ]
+    }
+  },
+  "NetworkRxBytes": {
+    "Sum": {
+      "summary": {
+        "min": 66154,
+        "max": 10412982,
+        "avg": 6431521.285714285,
+        "count": 14
+      },
+      "datapoints": [
+        {
+          "timestamp": "2026-03-06T14:16:00.000Z",
+          "value": 66154,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:17:00.000Z",
+          "value": 947521,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:18:00.000Z",
+          "value": 4045005,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:19:00.000Z",
+          "value": 8568311,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:20:00.000Z",
+          "value": 9883157,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:21:00.000Z",
+          "value": 10412982,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:22:00.000Z",
+          "value": 8969160,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:23:00.000Z",
+          "value": 6524145,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:24:00.000Z",
+          "value": 6954848,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:25:00.000Z",
+          "value": 9001319,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:26:00.000Z",
+          "value": 8232772,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:27:00.000Z",
+          "value": 6836204,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:28:00.000Z",
+          "value": 5586241,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:29:00.000Z",
+          "value": 4013479,
+          "unit": "Bytes/Second"
+        }
+      ]
+    }
+  },
+  "NetworkTxBytes": {
+    "Sum": {
+      "summary": {
+        "min": 135503,
+        "max": 15408811,
+        "avg": 9497535.214285715,
+        "count": 14
+      },
+      "datapoints": [
+        {
+          "timestamp": "2026-03-06T14:16:00.000Z",
+          "value": 135503,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:17:00.000Z",
+          "value": 1417340,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:18:00.000Z",
+          "value": 5951321,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:19:00.000Z",
+          "value": 12608291,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:20:00.000Z",
+          "value": 14619107,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:21:00.000Z",
+          "value": 15408811,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:22:00.000Z",
+          "value": 13299729,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:23:00.000Z",
+          "value": 9667341,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:24:00.000Z",
+          "value": 10314338,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:25:00.000Z",
+          "value": 13303215,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:26:00.000Z",
+          "value": 12125984,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:27:00.000Z",
+          "value": 10151267,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:28:00.000Z",
+          "value": 8252656,
+          "unit": "Bytes/Second"
+        },
+        {
+          "timestamp": "2026-03-06T14:29:00.000Z",
+          "value": 5710590,
+          "unit": "Bytes/Second"
+        }
+      ]
+    }
+  }
+}

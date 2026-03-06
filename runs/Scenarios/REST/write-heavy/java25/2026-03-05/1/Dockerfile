@@ -1,0 +1,55 @@
+# Multi-stage Dockerfile for Java 25
+FROM eclipse-temurin:25-jdk-jammy AS builder
+
+WORKDIR /app
+
+# Copy Maven wrapper and pom.xml
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+# Download dependencies
+RUN ./mvnw dependency:go-offline
+
+# Copy source code
+COPY src ./src
+
+# Build the application with Java 25
+RUN ./mvnw clean package -DskipTests -Djava.version=25
+
+# Runtime stage
+FROM eclipse-temurin:25-jre-jammy
+
+WORKDIR /app
+
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Create directory for GC logs (will be mounted as volume in ECS)
+RUN mkdir -p /var/log/gc && chown -R appuser:appuser /var/log/gc
+
+# Copy the JAR from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Change ownership
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+# Expose port
+EXPOSE 8080
+
+# Set default JVM options for Java 25 (can be overridden at runtime)
+# G1GC: Garbage-first garbage collector for balanced throughput and latency
+# GC logging: captures GC pause times and frequency for performance analysis
+# HeapDump: captures memory state on OutOfMemory errors
+ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -Xmx1024m"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Run the application
+ENTRYPOINT ["sh", "-c", "echo \"APP_IMAGE_TAG=$APP_IMAGE_TAG\"; echo \"JAVA_TOOL_OPTIONS=$JAVA_TOOL_OPTIONS\"; java -jar app.jar"]

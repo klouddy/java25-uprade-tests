@@ -1,17 +1,17 @@
 {
-  "inputDir": "/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/balanced/java25/2026-03-04/1",
-  "outputDir": "/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/balanced/java25/2026-03-04/1",
+  "inputDir": "/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/burst-spike/java25/2026-03-06/2",
+  "outputDir": "/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/burst-spike/java25/2026-03-06/2",
   "files": {
     "k6Summary": "k6-summary.txt"
   },
   "run": {
     "javaVersion": "25",
-    "scenario": "Balanced",
-    "startTime": "2026-03-04T19:59:49.813Z",
-    "endTime": "2026-03-04T20:13:51.348Z",
-    "albUrl": "http://java-bench-alb-1125659394.us-east-1.elb.amazonaws.com",
+    "scenario": "Burst-Spike",
+    "startTime": "2026-03-06T16:48:02.205Z",
+    "endTime": "2026-03-06T16:57:05.281Z",
+    "albUrl": "http://java-bench-alb-2121413823.us-east-1.elb.amazonaws.com",
     "jvm": {
-      "settings": "-XX:+UseG1GC -Xmx1024m"
+      "settings": "-XX:+UseG1GC -Xmx512m"
     }
   },
   "prometheus": {

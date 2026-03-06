@@ -1,0 +1,77 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-3-write-heavy.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/write-heavy/java25/2026-03-05/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-3-write-heavy.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/write-heavy/java25/2026-03-05/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 200 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] Running setup - checking application health...  source=console
+INFO[0843] Running teardown - checking application health...  source=console
+INFO[0843]
+========== Write-Heavy Scenario ==========   source=console
+INFO[0843] Start time: 2026-03-05T15:18:52.154Z          source=console
+INFO[0843] End time: 2026-03-05T15:32:55.795Z            source=console
+INFO[0843] Duration: 843.641 seconds                     source=console
+INFO[0843] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✓ 'p(99)<2000' p(99)=149.72ms
+    ✓ 'p(95)<1000' p(95)=96.23ms
+    ✓ 'p(50)<200' p(50)=48.84ms
+
+    http_req_failed
+    ✓ 'rate<0.05' rate=0.16%
+
+    http_reqs
+    ✓ 'count>0' count=39137
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 78272  92.759205/s
+    checks_succeeded...: 99.99% 78269 out of 78272
+    checks_failed......: 0.00%  3 out of 78272
+
+    ✓ Health check status is 200
+    ✓ POST /customers status is 201 or 200
+    ✗ POST /customers response time < 500ms
+      ↳  99% — ✓ 31416 / ✗ 1
+    ✓ GET /customers/{id} status is 200
+    ✓ GET /customers/{id} response time < 500ms
+    ✓ GET /customers?search status is 200
+    ✗ GET /customers?search response time < 500ms
+      ↳  99% — ✓ 3922 / ✗ 2
+
+    HTTP
+    http_req_duration..............: avg=54.98ms min=36.32ms med=48.84ms max=1.25s p(90)=70.34ms p(95)=96.23ms
+      { expected_response:true }...: avg=54.99ms min=36.32ms med=48.84ms max=1.25s p(90)=70.45ms p(95)=96.25ms
+    http_req_failed................: 0.16%  66 out of 39137
+    http_reqs......................: 39137  46.380788/s
+
+    EXECUTION
+    iteration_duration.............: avg=2.29s   min=82.12ms med=2.3s    max=4.02s p(90)=3.3s    p(95)=3.47s
+    iterations.....................: 39135  46.378418/s
+    vus............................: 1      min=1           max=200
+    vus_max........................: 200    min=200         max=200
+
+    NETWORK
+    data_received..................: 912 MB 1.1 MB/s
+    data_sent......................: 11 MB  13 kB/s
+
+
+
+
+running (14m03.8s), 000/200 VUs, 39135 complete and 0 interrupted iterations
+default ✓ [======================================] 000/200 VUs  14m0s

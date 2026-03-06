@@ -1,0 +1,80 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-4-ramp-up.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/ramp-up/java21/2026-03-05/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-4-ramp-up.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/ramp-up/java21/2026-03-05/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 1000 max VUs, 14m30s max duration (incl. graceful stop):
+              * default: Up to 1000 looping VUs for 14m0s over 3 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] Running setup - checking application health before ramp-up test...  source=console
+INFO[0840] Running teardown - checking application health after ramp-up test...  source=console
+INFO[0840]
+========== Ramp-Up Scalability Scenario ==========  source=console
+INFO[0840] Start time: 2026-03-05T20:19:28.869Z          source=console
+INFO[0840] End time: 2026-03-05T20:33:29.192Z            source=console
+INFO[0840] Duration: 840.323 seconds                     source=console
+INFO[0840] =======================================       source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<3000' p(99)=12.5s
+
+    http_req_failed
+    ✓ 'rate<0.10' rate=3.77%
+
+    http_reqs
+    ✓ 'count>0' count=157352
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 314702 374.431718/s
+    checks_succeeded...: 66.53% 209382 out of 314702
+    checks_failed......: 33.46% 105320 out of 314702
+
+    ✓ Health check status is 200
+    ✗ GET /customers/{id} status is 200
+      ↳  97% — ✓ 91668 / ✗ 2556
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  37% — ✓ 34868 / ✗ 59356
+    ✗ POST /customers status is 201 or 200
+      ↳  97% — ✓ 30516 / ✗ 879
+    ✗ POST /customers response time < 500ms
+      ↳  36% — ✓ 11373 / ✗ 20022
+    ✗ GET /customers?search status is 200
+      ↳  97% — ✓ 30855 / ✗ 876
+    ✗ GET /customers?search response time < 500ms
+      ↳  31% — ✓ 10100 / ✗ 21631
+
+    HTTP
+    http_req_duration..............: avg=2.57s min=33.29ms med=1.19s max=52.4s p(90)=7.69s p(95)=9.1s
+      { expected_response:true }...: avg=2.67s min=33.29ms med=1.29s max=52.4s p(90)=7.79s p(95)=9.21s
+    http_req_failed................: 3.77%  5942 out of 157352
+    http_reqs......................: 157352 187.217049/s
+
+    EXECUTION
+    iteration_duration.............: avg=3.07s min=75.84ms med=1.69s max=52.9s p(90)=8.19s p(95)=9.6s
+    iterations.....................: 157345 187.20872/s
+    vus............................: 5      min=2              max=1000
+    vus_max........................: 1000   min=1000           max=1000
+
+    NETWORK
+    data_received..................: 7.2 GB 8.6 MB/s
+    data_sent......................: 27 MB  32 kB/s
+
+
+
+
+running (14m00.5s), 0000/1000 VUs, 157345 complete and 45 interrupted iterations
+default ✓ [======================================] 0000/1000 VUs  14m0s
+ERRO[0840] thresholds on metrics 'http_req_duration' have been crossed

@@ -1,0 +1,81 @@
+jromero@MC02DW3HTMD6P k6-load-tests % k6 run scenario-5-burst-spike.js --out json=/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/burst-spike/java25/2026-03-06/1/k6-results.json
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: scenario-5-burst-spike.js
+        output: json (/Users/jromero/dev/src/tech-writing/java25-uprade-tests/runs/Scenarios/REST/burst-spike/java25/2026-03-06/1/k6-results.json)
+
+     scenarios: (100.00%) 1 scenario, 800 max VUs, 9m31s max duration (incl. graceful stop):
+              * default: Up to 800 looping VUs for 9m1s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+INFO[0000] Running setup - checking application health before spike test...  source=console
+INFO[0543] Running teardown - checking application recovery after spike...  source=console
+INFO[0543]
+========== Burst/Spike Scenario ==========   source=console
+INFO[0543] Start time: 2026-03-06T15:15:46.994Z          source=console
+INFO[0543] End time: 2026-03-06T15:24:50.151Z            source=console
+INFO[0543] Duration: 543.157 seconds                     source=console
+INFO[0543] =======================================       source=console
+INFO[0543] Application successfully recovered from spike  source=console
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(99)<2500' p(99)=18.89s
+
+    http_req_failed
+    ✓ 'rate<0.15' rate=8.10%
+
+    http_reqs
+    ✓ 'count>0' count=34527
+
+
+  █ TOTAL RESULTS
+
+    checks_total.......: 69052  127.088079/s
+    checks_succeeded...: 64.80% 44748 out of 69052
+    checks_failed......: 35.19% 24304 out of 69052
+
+    ✓ Health check status is 200
+    ✗ GET /customers/{id} status is 200
+      ↳  92% — ✓ 19061 / ✗ 1647
+    ✗ GET /customers/{id} response time < 500ms
+      ↳  38% — ✓ 7926 / ✗ 12782
+    ✗ GET /customers?search status is 200
+      ↳  91% — ✓ 6348 / ✗ 567
+    ✗ GET /customers?search response time < 500ms
+      ↳  35% — ✓ 2431 / ✗ 4484
+    ✗ POST /customers status is 201 or 200
+      ↳  91% — ✓ 6318 / ✗ 584
+    ✗ POST /customers response time < 500ms
+      ↳  38% — ✓ 2662 / ✗ 4240
+
+    HTTP
+    http_req_duration..............: avg=4.8s  min=34.23ms med=5.91s max=28.35s p(90)=9.5s   p(95)=10.56s
+      { expected_response:true }...: avg=5.22s min=34.23ms med=6.44s max=28.35s p(90)=9.59s  p(95)=10.75s
+    http_req_failed................: 8.10%  2798 out of 34527
+    http_reqs......................: 34527  63.54588/s
+
+    EXECUTION
+    iteration_duration.............: avg=6.02s min=79.75ms med=7.01s max=29.85s p(90)=10.88s p(95)=11.89s
+    iterations.....................: 34525  63.542199/s
+    vus............................: 3      min=1             max=800
+    vus_max........................: 800    min=800           max=800
+
+    NETWORK
+    data_received..................: 3.4 GB 6.2 MB/s
+    data_sent......................: 5.9 MB 11 kB/s
+
+
+
+
+running (9m03.3s), 000/800 VUs, 34525 complete and 0 interrupted iterations
+default ✓ [======================================] 000/800 VUs  9m1s
+ERRO[0543] thresholds on metrics 'http_req_duration' have been crossed

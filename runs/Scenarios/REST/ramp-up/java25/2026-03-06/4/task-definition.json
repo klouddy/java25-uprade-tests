@@ -1,0 +1,95 @@
+{
+  "family": "java-bench-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "$ECS_TASK_EXEC_ROLE_ARN",
+  "taskRoleArn": "$ECS_TASK_EXEC_ROLE_ARN",
+  "containerDefinitions": [
+    {
+      "name": "java-bench-app",
+      "image": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-java25-4-2026-03-06-4",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "jdbc:postgresql://$DB_ENDPOINT:5432/$DB_NAME"
+        },
+        {
+          "name": "SPRING_DATASOURCE_USERNAME",
+          "value": "$DB_USER"
+        },
+        {
+          "name": "SPRING_DATASOURCE_PASSWORD",
+          "value": "$DB_PASSWORD"
+        },
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "ecs"
+        },
+        {
+          "name": "APP_IMAGE",
+          "value": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-java25-4-2026-03-06-4"
+        },
+        {
+          "name": "METRICS_CLOUDWATCH_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "METRICS_CLOUDWATCH_NAMESPACE",
+          "value": "JavaBenchmark"
+        },
+        {
+          "name": "METRICS_CLOUDWATCH_STEP",
+          "value": "1m"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "$AWS_REGION"
+        },
+        {
+          "name": "DB_POOL_SIZE",
+          "value": "20"
+        },
+        {
+          "name": "JAVA_VERSION",
+          "value": "25"
+        },
+        {
+          "name": "VIRTUAL_THREADS_ENABLED",
+          "value": "false"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/actuator/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 10,
+        "retries": 3,
+        "startPeriod": 120
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/java-bench-app",
+          "awslogs-region": "$AWS_REGION",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      },
+      "essential": true,
+      "memory": 1024,
+      "cpu": 512
+    }
+  ]
+}

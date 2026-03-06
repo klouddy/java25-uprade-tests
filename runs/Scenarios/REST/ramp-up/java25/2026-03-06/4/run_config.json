@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-03-06T15:57:24.977Z",
+  "scenarioType": "REST",
+  "scenario": "Ramp Up",
+  "javaVersion": "25",
+  "jvmOptions": "-XX:+UseG1GC -Xmx512m",
+  "cpu": 512,
+  "memory": 1024,
+  "virtualThreadsEnabled": false,
+  "dbPoolSize": 20,
+  "scenarioNumber": 4,
+  "dockerImage": "913846010507.dkr.ecr.us-east-1.amazonaws.com/benchmark-app:rest-java25-4-2026-03-06-4",
+  "imageTag": "benchmark-app:rest-java25-4-2026-03-06-4"
+}
